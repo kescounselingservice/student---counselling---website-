@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Session - MindSpace</title>
+    <style>
+        body {
+            background-color: #fdf4f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #4a4a4a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #ffb5a7;
+            padding: 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #6d6875;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: #b5838d;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #6d6875;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #c9ada7;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .btn {
+            background-color: #c9ada7;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        footer {
+            background-color: #f4a261;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="book.html">Book Session</a>
+            <a href="#">Dashboard</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Book a Counseling Session</h1>
+        <form>
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Student Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="counselor">Select Counselor</label>
+                <select id="counselor">
+                    <option>General Support</option>
+                    <option>Academic Stress Specialist</option>
+                    <option>Personal Counseling</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">Preferred Date</label>
+                <input type="date" id="date" required>
+            </div>
+            <button type="submit" class="btn">Confirm Booking</button>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2026 MindSpace Student Counseling</p>
+    </footer>
+</body>
+</html>
