@@ -10,29 +10,70 @@
             background-color: #fdf4f5;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #4a4a4a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #ffb5a7;
+            padding: 20px;
+            text-align: center;
+        } 
+        nav a {
+            margin: 0 15px;
+            color: #6d6875;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        main {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
+            text-align: center;
+            padding: 20px;
         }
         h1 {
             color: #b5838d;
             font-size: 3rem;
             margin-bottom: 10px;
         }
-        p {
-            font-size: 1.2rem;
-            color: #6d6875;
+        .btn {
+            background-color: #c9ada7;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        footer {
+            background-color: #f4a261;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
-    <h1>MindSpace Platform</h1>
-    <p>Your safe space for guidance and support.</p>
+    <header>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Book Session</a>
+            <a href="#">Dashboard</a>
+        </nav>
+    </header>
+    <main>
+        <h1>MindSpace Platform</h1>
+        <p>Your safe space for guidance and support at K.E.S. Shroff College.</p>
+        <a href="#" class="btn">Start Booking</a>
+    </main>
+    <footer>
+        <p>&copy; 2026 MindSpace Student Counseling</p>
+    </footer>
 </body>
 </html>
-
-
-  
