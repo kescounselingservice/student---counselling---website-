@@ -113,7 +113,7 @@ fetch('Schedule.json')
 .then(response => response.json())
 .then(data => {
 const schedule = data.Schedule;
-const dateInput = document.getElementById('datetime-local');
+const dateInput = document.getElementById('date');
 if (dateInput) {
 const select = document.createElement('select');
 select.id = 'date';
