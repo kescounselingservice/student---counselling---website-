@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MindSpace</title>
+    <style>
+        body {
+            background-color: #fdf4f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #4a4a4a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #ffb5a7;
+            padding: 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #6d6875;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #b5838d;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        footer {
+            background-color: #f4a261;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="book.html">Book Session</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Student Dashboard</h1>
+        <div class="card">
+            <h3>Upcoming Sessions</h3>
+            <p>No active bookings. Click below to schedule.</p>
+            <a href="book.html" style="color: #b5838d; font-weight: bold;">Book a Session</a>
+        </div>
+        <div class="card">
+            <h3>Counseling Resources</h3>
+            <p>Access self-help guides, stress management tips, and emergency contacts.</p>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 MindSpace Student Counseling</p>
+    </footer>
+</body>
+</html>
