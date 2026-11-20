@@ -55,4 +55,42 @@
       { "Start": "2026-11-28T16:00:00+05:30", "End": "2026-11-28T17:00:00+05:30" }
     ]
   }
+
 }
+To display your counseling sessions, paste this code right before the closing body tag in your dashboard html file. Make sure to replace the placeholder config with your actual Firebase project details.```html
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+const firebaseConfig = {
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+projectId: "YOUR_PROJECT_ID",
+storageBucket: "YOUR_PROJECT_ID.appspot.com",
+messagingSenderId: "YOUR_SENDER_ID",
+appId: "YOUR_APP_ID"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+async function loadUserSessions() {
+const container = document.querySelector('.card');
+const userEmail = "harisodha341@gmail.com";
+try {
+const q = query(collection(db, "bookings"), where("studentEmail", "==", userEmail));
+const querySnapshot = await getDocs(q);
+let sessionsHTML = '<h3>Upcoming Sessions</h3>';
+if (querySnapshot.empty) {
+sessionsHTML += '<p>No active bookings. Click below to schedule.</p>';
+} else {
+querySnapshot.forEach((doc) => {
+const data = doc.data();
+sessionsHTML += <div style="border-left: 4px solid #b5583d; padding-left: 10px; margin-top: 10px;"> <p><strong>Counselor:</strong> ${data.counselor}</p> <p><strong>Date:</strong> ${data.preferredDate}</p> </div>;
+});
+}
+sessionsHTML += '<a href="book.html" style="color: #b5583d; font-weight: bold;">Book a Session</a>';
+container.innerHTML = sessionsHTML;
+} catch (error) {
+console.error("Error loading sessions:", error);
+}
+}
+document.addEventListener('DOMContentLoaded', loadUserSessions);
+</script>k
