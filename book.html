@@ -108,5 +108,32 @@
     <footer>
         <p>&copy; 2026 MindSpace Student Counseling</p>
     </footer>
+    `<script>
+fetch('Schedule.json')
+.then(response => response.json())
+.then(data => {
+const schedule = data.Schedule;
+const dateInput = document.getElementById('datetime-local');
+if (dateInput) {
+const select = document.createElement('select');
+select.id = 'datetime-local';
+select.name = 'date';
+select.required = true;
+Object.keys(schedule).forEach(day => {
+const optgroup = document.createElement('optgroup');
+optgroup.label = day;
+schedule[day].forEach(slot => {
+const option = document.createElement('option');
+option.value = slot.Start;
+option.textContent = ${new Date(slot.Start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} -${new Date(slot.End).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})};
+optgroup.appendChild(option);
+});
+select.appendChild(optgroup);
+});
+dateInput.parentNode.replaceChild(select, dateInput);
+}
+})
+.catch(error => console.error('Error loading schedule:', error));
+</script>
 </body>
 </html>
