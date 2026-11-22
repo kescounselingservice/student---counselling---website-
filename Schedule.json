@@ -12,13 +12,15 @@
   "Schedule": {
     "Monday": [
       {
-        "Start": "2026-11-23T10:00:00+05:30",
-        "End": "2026-11-23T11:00:00+05:30",
-        "CounselorID": "",
-        "Status": "Available",
-        "StudentEmail": "",
-        "Notes": ""
-      },
+  "Start": "2026-11-22T14:00:00+05:30",
+  "End": "2026-11-22T15:00:00+05:30",
+  "CounselorIDs": [
+    "vainavi",
+    "kinnari"
+  ],
+  "Status": "Booked",
+  "StudentEmail": "student@example.com",
+  "Notes": "Test booking requiring dual approval"
       {
         "Start": "2026-11-23T11:00:00+05:30",
         "End": "2026-11-23T12:00:00+05:30",
