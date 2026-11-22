@@ -1,118 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - MindSpace</title>
-  <style>
-    body {
-      background-color: #fdf4f5;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #4a4a4a;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #ffb5a7;
-      padding: 20px;
-      text-align: center;
-    }
-    nav a {
-      margin: 0 15px;
-      color: #6d6875;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    main {
-      flex: 1;
-      padding: 40px 20px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    h1 {
-      color: #b5838d;
-    }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    footer {
-      background-color: #f4a261;
-      text-align: center;
-      padding: 10px;
-      font-size: 0.8rem;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MindSpace | KES Counselling Service</title>
+    <style>
+        body {
+            background-color: #fdf4f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #4a4a4a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #ffb5a7;
+            padding: 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #6d6875;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #b5838d;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h3 {
+            color: #b5838d;
+            margin-top: 0;
+        }
+        p {
+            line-height: 1.6;
+            color: #6d6875;
+        }
+        .booking-item {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .booking-item:last-child {
+            border-bottom: none;
+        }
+        footer {
+            background-color: #f4a261;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85rem;
+            color: #4a4a4a;
+        }
+    </style>
 </head>
 <body>
 
-  <header>
+<header>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="book.html">Book Session</a>
-      <a href="dashboard.html">Dashboard</a>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="book.html">Book Session</a>
+        <a href="dashboard.html">Dashboard</a>
     </nav>
-  </header>
+</header>
 
-  <main>
+<main>
     <h1>Student Dashboard</h1>
     <div class="card">
-      <h3>Upcoming Sessions</h3>
-      <p>Loading bookings...</p>
+        <h3>Upcoming Sessions</h3>
+        <div id="bookingsList">Loading bookings...</div>
     </div>
-    <div class="card">
-      <h3>About Us</h3>
-      <p>MindSpace is dedicated to providing confidential guidance and mental health support to empower students throughout their academic journey.</p>
-    </div>
-  </main>
+</main>
 
-  <footer>
-    <p>&copy; 2026 MindSpace Student Counselling Platform</p>
-  </footer>
+<footer>
+    <p>&copy; 2026 MindSpace — KES Counselling Service</p>
+</footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAvLP2UXDZbStQcISPsTXFtUrDPTG8yRl0",
-      authDomain: "student-counselling-c6395.firebaseapp.com",
-      projectId: "student-counselling-c6395",
-      storageBucket: "student-counselling-c6395.appspot.com",
-      messagingSenderId: "959304254300",
-      appId: "1:959304254300:web:06533ac4c1efe5c3da7799"
+        apiKey: "AIzaSyAvlP2UXDZbStQcISpsTXFtUrDPTG8yRl0",
+        authDomain: "student-counselling-c6395.firebaseapp.com",
+        projectId: "student-counselling-c6395",
+        storageBucket: "student-counselling-c6395.firebasestorage.app",
+        messagingSenderId: "959304254300",
+        appId: "1:959304254300:web:06533ac4c1efe5c3da7799"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     async function loadBookings() {
-      const card = document.querySelector('.card');
-      try {
-        const querySnapshot = await getDocs(collection(db, "bookings"));
-        card.innerHTML = '<h3>Upcoming Sessions</h3>';
-        if (!querySnapshot.empty) {
-          querySnapshot.forEach((doc) => {
-            const session = doc.data();
-            card.innerHTML += `<p><strong>Status:</strong> ${session.Status || 'Booked'}<br><strong>Counselor:</strong> ${session.Counselor || 'N/A'}<br><strong>Date:</strong> ${session.Date || 'N/A'}</p>`;
-          });
-        } else {
-          card.innerHTML += '<p>No active bookings. Click below to schedule.</p><a href="book.html" style="color: #b5838d; font-weight: bold;">Book a Session</a>';
+        const container = document.getElementById('bookingsList');
+        try {
+            const querySnapshot = await getDocs(collection(db, "bookings"));
+            container.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                container.innerHTML = '<p>No active bookings. Click below to schedule.</p>';
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                const session = doc.data();
+                const status = session.status || 'Booked';
+                const counselor = session.counselor || 'N/A';
+                const bookingTime = session.bookingTime ? new Date(session.bookingTime).toLocaleString() : 'N/A';
+
+                const item = document.createElement('div');
+                item.className = 'booking-item';
+                item.innerHTML = `
+                    <p><strong>Status:</strong> ${status}</p>
+                    <p><strong>Counsellor:</strong> ${counselor}</p>
+                    <p><strong>Date & Time:</strong> ${bookingTime}</p>
+                `;
+                container.appendChild(item);
+            });
+        } catch (error) {
+            console.error("Error loading bookings:", error);
+            container.innerHTML = '<p>Error loading bookings.</p>';
         }
-      } catch (error) {
-        console.error("Error loading bookings:", error);
-        card.innerHTML = '<h3>Upcoming Sessions</h3><p>Error loading bookings.</p>';
-      }
     }
 
     loadBookings();
-  </script>
+</script>
+
 </body>
 </html>
