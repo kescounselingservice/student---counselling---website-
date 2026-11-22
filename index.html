@@ -1,103 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindSpace - Platform Access</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #fdf4f5; color: #4a4a4a; display: flex; flex-direction: column; min-height: 100vh; }
-        header { background-color: #ffb5a7; padding: 20px; text-align: center; }
-        .main-container { display: flex; flex: 1; justify-content: space-around; padding: 20px; gap: 20px; }
-        .portal { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 45%; }
+        body { background-color: #fdf4f5; color: #4a4a4a; min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: #ffb5a7; padding: 20px; text-align: center; color: white; }
+        .main-container { display: flex; flex: 1; justify-content: space-around; padding: 20px; gap: 20px; flex-wrap: wrap; }
+        .portal { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); width: 45%; min-width: 300px; }
         h2 { margin-bottom: 20px; color: #333; text-align: center; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input[type="text"], input[type="password"], input[type="email"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        button { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn-login { background-color: #b5e2fa; color: #333; }
-        .btn-signup { background-color: #ffb5a7; color: #333; }
-        footer { background-color: #eee; text-align: center; padding: 10px; font-size: 0.9em; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; color: white; }
+        .btn-login { background-color: #b5e2fa; }
+        .btn-signup { background-color: #ffb5a7; }
+        footer { background-color: #eee; text-align: center; padding: 10px; font-size: 0.9rem; }
     </style>
 </head>
-<body
-    <header>
-        <h1>MindSpace Platform</h1>
-    </header>
+<body>
 
-    <div class="main-container">
-        <!-- Student Portal -->
-        <div class="portal">
-            <h2>Student Portal</h2>
-            <form id="studentForm">
-                <div class="form-group">
-                    <label for="studentEmail">Email</label>
-                    <input type="text" id="studentEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="studentPassword">Password</label>
-                    <input type="password" id="studentPassword" required>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn-login" onclick="handleStudentAuth('login')">Login</button>
-                    <button type="button" class="btn-signup" onclick="handleStudentAuth('signup')">Sign Up</button>
-                </div>
-            </form>
-        </div>
+<header>
+    <h1>MindSpace Platform</h1>
+</header>
 
-        <!-- Counselor Portal -->
-        <div class="portal">
-            <h2>Counselor Portal</h2>
-            <form id="counselorForm">
-                <div class="form-group">
-                    <label for="counselorUsername">Username</label>
-                    <input type="text" id="counselorUsername" required>
-                </div>
-                <div class="form-group">
-                    <label for="counselorPassword">Password</label>
-                    <input type="password" id="counselorPassword" required>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn-login" onclick="handleCounselorAuth()">Login</button>
-                </div>
-            </form>
-        </div>
+<div class="main-container">
+    <!-- Student Portal -->
+    <div class="portal">
+        <h2>Student Portal</h2>
+        <form id="studentForm">
+            <div class="form-group">
+                <label for="studentEmail">Email</label>
+                <input type="email" id="studentEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="studentPassword">Password</label>
+                <input type="password" id="studentPassword" required>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn-login" onclick="handleStudentAuth('login')">Login</button>
+                <button type="button" class="btn-signup" onclick="handleStudentAuth('signup')">Sign Up</button>
+            </div>
+        </form>
     </div>
 
-    <footer>
-        <p>&copy; 2026 MindSpace Platform</p>
-    </footer>
+    <!-- Counselor Portal -->
+    <div class="portal">
+        <h2>Counselor Portal</h2>
+        <form id="counselorForm">
+            <div class="form-group">
+                <label for="counselorUsername">Username</label>
+                <input type="text" id="counselorUsername" required>
+            </div>
+            <div class="form-group">
+                <label for="counselorPassword">Password</label>
+                <input type="password" id="counselorPassword" required>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn-login" onclick="handleCounselorAuth()">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <script>
-        function handleStudentAuth(action) {
-            const email = document.getElementById('studentEmail').value;
-            const password = document.getElementById('studentPassword').value;
-            if(!email || !password) { alert('Please fill in all fields.'); return; }
-            
-            if(action === 'signup') {
-                localStorage.setItem('studentUser', JSON.stringify({email, password}));
-                alert('Sign up successful! Please log in.');
-                document.getElementById('studentForm').reset();
-            } else if(action === 'login') {
-                const storedUser = JSON.parse(localStorage.getItem('studentUser'));
-                if(storedUser && storedUser.email === email && storedUser.password === password) {
-                    alert('Redirecting to Student Dashboard...');
-                    window.location.href = 'student_dashboard.html';
-                } else {
-                    alert('Invalid credentials or user not found. Please sign up first.');
-                }
+<footer>
+    <p>&copy; 2026 MindSpace Platform</p>
+</footer>
+
+<script>
+    function handleStudentAuth(action) {
+        const email = document.getElementById('studentEmail').value;
+        const password = document.getElementById('studentPassword').value;
+        if (!email || !password) { alert('Please fill in all fields.'); return; }
+
+        if(action === 'signup') {
+            localStorage.setItem('studentUser', JSON.stringify({email, password}));
+            alert('Sign up successful! Please log in.');
+            document.getElementById('studentForm').reset();
+        } else if(action === 'login') {
+            const storedUser = JSON.parse(localStorage.getItem('studentUser'));
+            if(storedUser && storedUser.email === email && storedUser.password === password) {
+                alert('Redirecting to Student Dashboard...');
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Invalid credentials or user not found. Please sign up first.');
             }
         }
+    }
 
-        function handleCounselorAuth() {
-            const username = document.getElementById('counselorUsername').value;
-            const password = document.getElementById('counselorPassword').value;
-            if(!username || !password) { alert('Please fill in all fields.'); return; }
+    function handleCounselorAuth() {
+        const username = document.getElementById('counselorUsername').value;
+        const password = document.getElementById('counselorPassword').value;
+        if (!username || !password) { alert('Please fill in all fields.'); return; }
 
-            alert('Redirecting to Counselor Dashboard...');
-            window.location.href = 'Counsellor.html'; 
-        }
-    </script>
+        localStorage.setItem('activeCounsellor', username);
+        alert('Redirecting to Counselor Dashboard...');
+        window.location.href = 'Counsellor.html';
+    }
+</script>
 </body>
 </html>
