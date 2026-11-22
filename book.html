@@ -76,12 +76,13 @@
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="book.html">Book Session</a>
-            <a href="#">Dashboard</a>
+            <a href="dashboard.html">Dashboard</a>
         </nav>
     </header>
+
     <main>
         <h1>Book a Counseling Session</h1>
-        <form>
+        <form id="bookingForm">
             <div class="form-group">
                 <label for="name">Full Name</label>
                 <input type="text" id="name" required>
@@ -93,48 +94,106 @@
             <div class="form-group">
                 <label for="counselor">Select Counselor</label>
                 <select id="counselor">
-                    <option>Group Support</option>
-                    <option>indivudial Counseling</option>
+                    <option value="Group Support">Group Support</option>
+                    <option value="Individual Counseling">Individual Counseling</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="date">Preferred Date</label>
-                <input type="date" id="date" name="date" required>
+                <input type="date" id="date" required>
             </div>
             <button type="submit" class="btn">Confirm Booking</button>
         </form>
     </main>
+
     <footer>
         <p>&copy; 2026 MindSpace Student Counseling</p>
     </footer>
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        fetch('Schedule.json')
-        .then(response => response.json())
-        .then(data => {
-            const schedule = data.Schedule;
-            const dateInput = document.getElementById('date');
-            if (dateInput) {
-                const select = document.createElement('select');
-                select.id = 'date';
-                select.name = 'date';
-                select.required = true;
-                Object.keys(schedule).forEach(day => {
-                    const optgroup = document.createElement('optgroup');
-                    optgroup.label = day;
-                    schedule[day].forEach(slot => {
-                        const option = document.createElement('option');
-                        option.value = slot.Start;
-                        option.textContent = `${new Date(slot.Start).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})} - ${new Date(slot.End).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`;
-                        optgroup.appendChild(option);
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // TODO: Replace with your actual Firebase configuration object
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Fetch schedule and populate date dropdown
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('Schedule.json')
+            .then(response => response.json())
+            .then(data => {
+                const schedule = data.Schedule;
+                const dateInput = document.getElementById('date');
+                if (dateInput) {
+                    const select = document.createElement('select');
+                    select.id = 'date';
+                    select.name = 'date';
+                    select.required = true;
+                    Object.keys(schedule).forEach(day => {
+                        const optgroup = document.createElement('optgroup');
+                        optgroup.label = day;
+                        schedule[day].forEach(slot => {
+                            const option = document.createElement('option');
+                            option.value = slot.Start;
+                            option.textContent = `${new Date(slot.Start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Counselor: ${slot.Counselor}`;
+                            optgroup.appendChild(option);
+                        });
+                        select.appendChild(optgroup);
                     });
-                    select.appendChild(optgroup);
+                    dateInput.parentNode.replaceChild(select, dateInput);
+                }
+            })
+            .catch(error => console.error('Error loading schedule:', error));
+
+            // Handle Form Submission
+            const bookingForm = document.getElementById('bookingForm');
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const submitBtn = bookingForm.querySelector('button[type="submit"]');
+                    submitBtn.textContent = 'Saving...';
+                    submitBtn.disabled = true;
+
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const counselor = document.getElementById('counselor').value;
+                    const dateSelect = document.getElementById('date');
+                    const dateValue = dateSelect.value;
+                    const counselorName = dateSelect.options[dateSelect.selectedIndex].text.split(' - Counselor: ')[1] || counselor;
+
+                    try {
+                        const docRef = await addDoc(collection(db, "Bookings"), {
+                            studentName: name,
+                            studentEmail: email,
+                            counselor: counselorName,
+                            bookingTime: dateValue,
+                            status: "confirmed",
+                            createdAt: new Date().toISOString()
+                        });
+                        alert('Booking confirmed!');
+                        bookingForm.reset();
+                        window.location.href = 'dashboard.html';
+                    } catch (error) {
+                        console.error('Error adding document: ', error);
+                        alert('Failed to save booking. Please try again.');
+                    } finally {
+                        submitBtn.textContent = 'Confirm Booking';
+                        submitBtn.disabled = false;
+                    }
                 });
-                dateInput.parentNode.replaceChild(select, dateInput);
             }
-        })
-        .catch(error => console.error('Error loading schedule:', error));
-    });
+        });
     </script>
 </body>
 </html>
