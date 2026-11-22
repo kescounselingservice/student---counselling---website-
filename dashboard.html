@@ -87,5 +87,27 @@
     })
     .catch(error => console.error('Error loading schedule:', error));
 </script>
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAvlP2UXDZbStQcISpsTXFtUrDPTG8yRl0",
+    authDomain: "student-counselling-c6395.firebaseapp.com",
+    projectId: "student-counselling-c6395",
+    storageBucket: "student-counselling-c6395.firebasestorage.app",
+    messagingSenderId: "959304254300",
+    appId: "1:959304254300:web:06533ac4c1efe5c3da7799",
+    measurementId: "G-7L99MLL758"
+  };
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
