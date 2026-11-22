@@ -228,11 +228,11 @@
                     counselor: counselor,
                     bookingTime: bookingTime,
                     notes: notes,
-                    status: "confirmed",
+                    status: "pending",
                     createdAt: new Date().toISOString()
                 });
 
-                alert("Booking confirmed!");
+                alert("Booking request submitted! Awaiting counsellor approval.");
                 bookingForm.reset();
                 window.location.href = "dashboard.html";
             } catch (error) {
