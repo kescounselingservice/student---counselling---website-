@@ -70,17 +70,19 @@
   <h3>About Us</h3>
   <p>MindSpace is dedicated to providing confidential guidance and mental health support to empower students throughout their academic journey.</p>
 </div>        
-    </main>
-    <script>
+    </main><script>
   fetch('Schedule.json')
     .then(response => response.json())
     .then(data => {
-      if (data.length > 0) {
-        const card = document.querySelector('.card');
-        card.innerHTML = '<h3>Upcoming Sessions</h3>';
-        data.forEach(session => {
-          card.innerHTML += `<p><strong>Counselor:</strong> ${session.counselor}<br><strong>Date:</strong> ${session.date}</p>`;
+      const sessions = data.Schedule?.Monday || [];
+      const card = document.querySelector('.card');
+      card.innerHTML = '<h3>Upcoming Sessions</h3>';
+      if (sessions.length > 0) {
+        sessions.forEach(session => {
+          card.innerHTML += `<p><strong>Status:</strong> ${session.Status}<br><strong>Counselors:</strong> ${session.CounselorIDs.join(', ')}<br><strong>Time:</strong> ${new Date(session.Start).toLocaleString()}</p>`;
         });
+      } else {
+        card.innerHTML += '<p>No active bookings. Click below to schedule.</p><a href="book.html" style="color: #b5838d; font-weight: bold;">Book a Session</a>';
       }
     })
     .catch(error => console.error('Error loading schedule:', error));
