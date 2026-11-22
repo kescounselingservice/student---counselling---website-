@@ -1,102 +1,98 @@
-<h1>MindSpace Platform</h1>
+No worries at all. Since you're on your phone, just tap and hold the code block to select it, or use the copy icon at the top of my message. Here is the complete code again for you.```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindSpace - Student Counseling</title>
-    <style>
-        body {
-            background-color: #fdf4f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #4a4a4a;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        header {
-            background-color: #ffb5a7;
-            padding: 20px;
-            text-align: center;
-        } 
-        nav a {
-            margin: 0 15px;
-            color: #6d6875;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-        }
-        h1 {
-            color: #b5838d;
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-        .btn {
-            background-color: #c9ada7;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-        footer {
-            background-color: #f4a261;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.8rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindSpace - Platform Access</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #fdf4f5; color: #4a4a4a; display: flex; flex-direction: column; min-height: 100vh; }
+header { background-color: #ffb5a7; padding: 20px; text-align: center; }
+.main-container { display: flex; flex: 1; justify-content: space-around; padding: 20px; gap: 20px; }
+.portal { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 45%; }
+h2 { margin-bottom: 20px; color: #333; text-align: center; }
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; }
+input[type="text"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+.btn-group { display: flex; gap: 10px; margin-top: 20px; }
+button { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.btn-login { background-color: #b5e2fa; color: #333; }
+.btn-signup { background-color: #ffb5a7; color: #333; }
+footer { background-color: #eee; text-align: center; padding: 10px; font-size: 0.9em; }
+</style>
 </head>
 <body>
-    <header>
-<nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="book.html">Book Session</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="resources.html">Resources</a>
-</nav>
- </header>
- <main><section class="hero">
-  <h1>MindSpace Platform</h1>
-  <p>Your safe space for guidance and support at K.E.S. Shroff College.</p>
-  <a href="book.html" class="btn">Start Booking</a>
-</section>
-     </main>
- </footer>
+<header>
+<h1>MindSpace Platform</h1>
+</header>
+<div class="main-container">
+<!-- Student Portal -->
+<div class="portal">
+<h2>Student Portal</h2>
+<form id="studentForm">
+<div class="form-group">
+<label for="studentEmail">Email</label>
+<input type="text" id="studentEmail" required>
+</div>
+<div class="form-group">
+<label for="studentPassword">Password</label>
+<input type="password" id="studentPassword" required>
+</div>
+<div class="btn-group">
+<button type="button" class="btn-login" onclick="handleStudentAuth('login')">Login</button>
+<button type="button" class="btn-signup" onclick="handleStudentAuth('signup')">Sign Up</button>
+</div>
+</form>
+</div>
+<!-- Counselor Portal -->
+<div class="portal">
+<h2>Counselor Portal</h2>
+<form id="counselorForm">
+<div class="form-group">
+<label for="counselorEmail">Email</label>
+<input type="text" id="counselorEmail" required>
+</div>
+<div class="form-group">
+<label for="counselorPassword">Password</label>
+<input type="password" id="counselorPassword" required>
+</div>
+<div class="btn-group">
+<button type="button" class="btn-login" onclick="handleCounselorAuth()">Login</button>
+</div>
+</form>
+</div>
+</div>
+<footer>
+<p>© 2026 MindSpace Platform</p>
+</footer>
+<script>
+function handleStudentAuth(action) {
+const email = document.getElementById('studentEmail').value;
+const password = document.getElementById('studentPassword').value;
+if(!email || !password) { alert('Please fill in all fields.'); return; }
+if(action === 'signup') {
+localStorage.setItem('studentUser', JSON.stringify({email, password}));
+alert('Sign up successful! Please log in.');
+document.getElementById('studentForm').reset();
+} else if(action === 'login') {
+const storedUser = JSON.parse(localStorage.getItem('studentUser'));
+if(storedUser && storedUser.email === email && storedUser.password === password) {
+alert('Redirecting to Student Dashboard...');
+window.location.href = 'student_dashboard.html';
+} else {
+alert('Invalid credentials or user not found. Please sign up first.');
+}
+}
+}
+function handleCounselorAuth() {
+const email = document.getElementById('counselorEmail').value;
+const password = document.getElementById('counselorPassword').value;
+if(!email || !password) { alert('Please fill in all fields.'); return; }
+alert('Redirecting to Counselor Dashboard...');
+window.location.href = 'Counsellor.html';
+}
+</script>
 </body>
 </html>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAvlP2UXDZbStQcISpsTXFtUrDPTG8yRl0",
-    authDomain: "student-counselling-c6395.firebaseapp.com",
-    projectId: "student-counselling-c6395",
-    storageBucket: "student-counselling-c6395.firebasestorage.app",
-    messagingSenderId: "959304254300",
-    appId: "1:959304254300:web:e4161f9857aa39b8da7799",
-    measurementId: "G-NYPXX2PXC9"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
