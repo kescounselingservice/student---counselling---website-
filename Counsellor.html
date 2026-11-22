@@ -1,281 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Counsellor Portal — MindSpace</title>
-  <style>
-    :root {
-      --bg: #fdf6f5;
-      --header-bg: #f6b5ac;
-      --card-bg: #ffffff;
-      --primary: #a67c7c;
-      --primary-dark: #8c6464;
-      --text: #3d2c2e;
-      --muted: #7a6567;
-      --border: #ead8d6;
-    }
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--text); }
-    
-    header {
-      background: var(--header-bg);
-      padding: 16px 20px;
-      text-align: center;
-    }
-    header h1 { margin: 0 0 10px; font-size: 24px; color: #5e3a3d; }
-    nav a {
-      text-decoration: none;
-      color: #5e3a3d;
-      font-weight: 600;
-      margin: 0 10px;
-      font-size: 14px;
-    }
-
-    .container { max-width: 600px; margin: 24px auto; padding: 0 16px; }
-    
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-
-    h2 { margin-top: 0; color: #7a4b4f; text-align: center; }
-    
-    label { display: block; font-weight: 600; margin: 12px 0 6px; font-size: 14px; }
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 13px;
-      margin-top: 18px;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button:hover { background: var(--primary-dark); }
-
-    .btn-approve {
-      background: #4e8a63;
-      margin-top: 10px;
-      padding: 10px;
-      font-size: 14px;
-    }
-    .btn-approve:hover { background: #3d6f4e; }
-
-    .btn-logout {
-      background: transparent;
-      color: var(--primary-dark);
-      border: 1px solid var(--primary);
-      padding: 8px 16px;
-      width: auto;
-      font-size: 13px;
-      margin-top: 0;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .badge-pending { background: #fff3cd; color: #856404; }
-    .badge-confirmed { background: #d4edda; color: #155724; }
-
-    .error { color: #c0392b; font-size: 14px; text-align: center; margin-top: 10px; display: none; }
-    .hidden { display: none; }
-    .detail-row { margin: 6px 0; font-size: 15px; }
-    .detail-label { font-weight: 700; color: var(--muted); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counselor Portal - MindSpace</title>
+    <style>
+        :root {
+            --bg: #fdf6f5;
+            --header-bg: #f6b5ac;
+            --card-bg: #ffffff;
+            --primary: #a67c7c;
+            --primary-dark: #8c6464;
+            --text: #3d2c2e;
+            --muted: #7a6567;
+            --border: #ead8d6;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); }
+        header { background: var(--header-bg); padding: 16px 20px; text-align: center; }
+        header h1 { margin: 0 0 10px; font-size: 1.8rem; color: #fff; }
+        nav a { text-decoration: none; color: #5e3a3d; font-weight: 600; margin: 0 10px; font-size: 14px; }
+        .container { max-width: 800px; margin: 24px auto; padding: 0 20px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        h3 { margin-top: 0; color: var(--primary-dark); }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-confirmed { background: #d4edda; color: #155724; }
+        .detail-row { margin: 6px 0; font-size: 14px; }
+        .detail-label { font-weight: 700; color: var(--muted); }
+        button { width: 100%; padding: 12px; margin-top: 14px; background: var(--primary); color: #fff; border: none; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        button:hover { background: var(--primary-dark); }
+        .btn-logout { background: transparent; color: var(--primary-dark); border: 1px solid var(--primary); width: auto; padding: 8px 16px; font-size: 13px; margin-top: 0; }
+        .btn-logout:hover { background: var(--primary); color: white; }
+    </style>
 </head>
 <body>
 
-  <header>
+<header>
     <h1>MindSpace Platform</h1>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="book.html">Book Session</a>
-      <a href="dashboard.html">Student Dashboard</a>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="book.html">Book Session</a>
+        <a href="dashboard.html">Student Dashboard</a>
     </nav>
-  </header>
+</header>
 
-  <div class="container">
-    <!-- LOGIN SECTION -->
-    <div id="loginView" class="card">
-      <h2>Counsellor Login</h2>
-      <form id="loginForm">
-        <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Enter counsellor username" required>
-
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter password" required>
-
-        <button type="submit">Log In</button>
-        <div id="loginError" class="error">Invalid username or password.</div>
-      </form>
-    </div>
-
-    <!-- DASHBOARD SECTION -->
-    <div id="dashboardView" class="hidden">
-      <div class="top-bar">
+<div class="container">
+    <div class="top-bar">
         <div>
-          <span style="font-size: 13px; color: var(--muted);">Logged in as</span>
-          <h3 id="counsellorTitle" style="margin: 2px 0 0; color: #5e3a3d;"></h3>
+            <span style="font-size: 13px; color: var(--muted);">Logged in as:</span>
+            <h3 id="counsellorTitle" style="margin: 2px 0 0;">Counselor</h3>
         </div>
         <button class="btn-logout" onclick="logout()">Logout</button>
-      </div>
-
-      <div class="card">
-        <h3 style="margin-top: 0; color: #7a4b4f;">Assigned & General Requests</h3>
-        <div id="bookingsList">Loading sessions...</div>
-      </div>
     </div>
-  </div>
 
-  <script>
-    // Counsellor credentials mapped to official display titles
-    const COUNSELLORS = {
-      "VAINAVI MAM": {
-        password: "+918169583603akayda",
-        displayName: "Vainavi Ma'am"
-      },
-      "KINNARI MAM": {
-        password: "+917021198239akayda",
-        displayName: "Kinnari Ma'am"
-      }
+    <div id="bookingsList">Loading sessions...</div>
+</div>
+
+<script>
+    const COUNSELLERS = {
+        "VAINAVI MAM": { displayName: "Vainavi Ma'am" },
+        "KINNARI MAM": { displayName: "Kinnari Ma'am" }
     };
 
-    const loginView = document.getElementById("loginView");
-    const dashboardView = document.getElementById("dashboardView");
-    const loginForm = document.getElementById("loginForm");
-    const loginError = document.getElementById("loginError");
-    const counsellorTitle = document.getElementById("counsellorTitle");
-    const bookingsList = document.getElementById("bookingsList");
-
-    // Check if already logged in during this session
     window.addEventListener("DOMContentLoaded", () => {
-      const savedCounsellor = sessionStorage.getItem("activeCounsellor");
-      if (savedCounsellor) {
-        showDashboard(savedCounsellor);
-      }
+        const savedCounsellor = sessionStorage.getItem("activeCounsellor") || localStorage.getItem("activeCounsellor");
+        if (savedCounsellor && COUNSELLERS[savedCounsellor]) {
+            showDashboard(COUNSELLERS[savedCounsellor].displayName);
+        } else {
+            window.location.href = "index.html";
+        }
     });
-
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const enteredUser = document.getElementById("username").value.trim().toUpperCase();
-      const enteredPass = document.getElementById("password").value.trim();
-
-      const account = COUNSELLORS[enteredUser];
-      if (account && account.password === enteredPass) {
-        loginError.style.display = "none";
-        sessionStorage.setItem("activeCounsellor", account.displayName);
-        showDashboard(account.displayName);
-      } else {
-        loginError.style.display = "block";
-      }
-    });
-
-    function logout() {
-      sessionStorage.removeItem("activeCounsellor");
-      dashboardView.classList.add("hidden");
-      loginView.classList.remove("hidden");
-      loginForm.reset();
-    }
 
     function showDashboard(displayName) {
-      loginView.classList.add("hidden");
-      dashboardView.classList.remove("hidden");
-      counsellorTitle.textContent = displayName;
-      renderBookings(displayName);
+        document.getElementById("counsellorTitle").textContent = displayName;
+        renderBookings(displayName);
     }
 
-    // Reads from localStorage (adjust key if your book.html uses a different key or Firebase)
     function getBookings() {
-      const possibleKeys = ["mindspace_bookings", "bookings", "sessions"];
-      for (const key of possibleKeys) {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          try {
-            return { key, data: JSON.parse(raw) };
-          } catch (e) {}
+        const possibleKeys = ["mindspace_bookings", "bookings", "session_bookings"];
+        for (const key of possibleKeys) {
+            const data = localStorage.getItem(key);
+            if (data) {
+                try {
+                    return { storageKey: key, list: JSON.parse(data) };
+                } catch(e) {
+                    console.error("Error parsing storage key", key, e);
+                }
+            }
         }
-      }
-      return { key: "bookings", data: [] };
+        return { storageKey: "mindspace_bookings", list: [] };
     }
 
     function renderBookings(displayName) {
-      const { key, data } = getBookings();
-      
-      // Show bookings assigned specifically to this counsellor OR general sessions
-      const relevant = data
-        .map((item, idx) => ({ ...item, _index: idx }))
-        .filter(b => 
-          b.counsellor === displayName || 
-          b.counsellor === "Group Support" || 
-          b.counsellor === "Individual Counselling"
+        const container = document.getElementById("bookingsList");
+        const { storageKey, list } = getBookings();
+        
+        const relevant = list.filter(b => 
+            b.counsellor === displayName || 
+            b.counsellor === "Group Support" || 
+            b.counsellor === "Individual Counselling"
         );
 
-      if (relevant.length === 0) {
-        bookingsList.innerHTML = `<p style="color: var(--muted); text-align: center;">No booking requests found for ${displayName}.</p>`;
-        return;
-      }
+        if (relevant.length === 0) {
+            container.innerHTML = '<div class="card"><p>No pending or confirmed sessions found for your queue.</p></div>';
+            return;
+        }
 
-      bookingsList.innerHTML = relevant.map(b => {
-        const isPending = (b.status || "pending").toLowerCase() === "pending";
-        const statusBadge = isPending
-          ? `<span class="badge badge-pending">Pending</span>`
-          : `<span class="badge badge-confirmed">Approved by ${b.approvedBy || displayName}</span>`;
+        container.innerHTML = relevant.map((b, index) => {
+            const isPending = (!b.status || b.status === "pending");
+            const statusBadge = isPending 
+                ? '<span class="badge badge-pending">Pending Approval</span>' 
+                : '<span class="badge badge-confirmed">Confirmed</span>';
+            
+            const actionBtn = isPending 
+                ? `<button onclick="approveBooking('${storageKey}', ${index}, '${displayName}')">Approve Session</button>` 
+                : '';
 
-        return `
-          <div class="card" style="background: #fffafa; margin-bottom: 12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <strong>${b.name || b.fullName || "Student"}</strong>
-              ${statusBadge}
-            </div>
-            <div class="detail-row"><span class="detail-label">Email:</span> ${b.email || "N/A"}</div>
-            <div class="detail-row"><span class="detail-label">Requested For:</span> ${b.counsellor}</div>
-            <div class="detail-row"><span class="detail-label">Date & Time:</span> ${b.date || b.slot || b.dateTime || "N/A"}</div>
-            ${b.note ? `<div class="detail-row"><span class="detail-label">Note:</span> ${b.note}</div>` : ""}
-            ${isPending ? `<button class="btn-approve" onclick="approveBooking('${key}', ${b._index}, '${displayName.replace("'", "\\'")}')">Approve Session</button>` : ""}
-          </div>
-        `;
-      }).join("");
+            return `
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <div>
+                            <h3 style="margin: 0;">${b.name || b.fullName || 'Student Session'}</h3>
+                            <span style="font-size: 13px; color: var(--muted);">${b.email || ''}</span>
+                        </div>
+                        ${statusBadge}
+                    </div>
+                    <div class="detail-row"><span class="detail-label">Service:</span> ${b.counsellor}</div>
+                    <div class="detail-row"><span class="detail-label">Date & Time:</span> ${b.date} at ${b.time}</div>
+                    ${b.notes ? `<div class="detail-row"><span class="detail-label">Notes:</span> ${b.notes}</div>` : ''}
+                    ${actionBtn}
+                </div>
+            `;
+        }).join("");
     }
 
     function approveBooking(storageKey, index, displayName) {
-      const raw = localStorage.getItem(storageKey);
-      if (!raw) return;
-      const list = JSON.parse(raw);
-      if (list[index]) {
-        list[index].status = "confirmed";
-        list[index].approvedBy = displayName;
-        localStorage.setItem(storageKey, JSON.stringify(list));
-        renderBookings(displayName);
-      }
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return;
+        try {
+            const list = JSON.parse(raw);
+            if (list[index]) {
+                list[index].status = "confirmed";
+                list[index].approvedBy = displayName;
+                localStorage.setItem(storageKey, JSON.stringify(list));
+                renderBookings(displayName);
+            }
+        } catch(e) {
+            console.error("Failed to approve booking", e);
+        }
     }
-  </script>
+
+    function logout() {
+        sessionStorage.removeItem("activeCounsellor");
+        localStorage.removeItem("activeCounsellor");
+        window.location.href = "index.html";
+    }
+</script>
 </body>
 </html>
