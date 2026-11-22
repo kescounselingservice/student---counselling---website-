@@ -1,112 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - MindSpace</title>
-    <style>
-        body {
-            background-color: #fdf4f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #4a4a4a;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        header {
-            background-color: #ffb5a7;
-            padding: 20px;
-            text-align: center;
-        }
-        nav a {
-            margin: 0 15px;
-            color: #6d6875;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        main {
-            flex: 1;
-            padding: 40px 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #b5838d;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        footer {
-            background-color: #f4a261;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.8rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - MindSpace</title>
+  <style>
+    body {
+      background-color: #fdf4f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #4a4a4a;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #ffb5a7;
+      padding: 20px;
+      text-align: center;
+    }
+    nav a {
+      margin: 0 15px;
+      color: #6d6875;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    main {
+      flex: 1;
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #b5838d;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    footer {
+      background-color: #f4a261;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.8rem;
+    }
+  </style>
 </head>
 <body>
-    </header>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="book.html">Book Session</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <h1>Student Dashboard</h1>
-        <div class="card">
-            <h3>Upcoming Sessions</h3>
-            <p>No active bookings. Click below to schedule.</p>
-            <a href="book.html" style="color: #b5838d; font-weight: bold;">Book a Session</a>
-        </div>
+
+  <header>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="book.html">Book Session</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Student Dashboard</h1>
     <div class="card">
-  <h3>About Us</h3>
-  <p>MindSpace is dedicated to providing confidential guidance and mental health support to empower students throughout their academic journey.</p>
-</div>        
-    </main><script>
-  fetch('Schedule.json')
-    .then(response => response.json())
-    .then(data => {
-      const sessions = data.Schedule?.Monday || [];
+      <h3>Upcoming Sessions</h3>
+      <p>Loading bookings...</p>
+    </div>
+    <div class="card">
+      <h3>About Us</h3>
+      <p>MindSpace is dedicated to providing confidential guidance and mental health support to empower students throughout their academic journey.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 MindSpace Student Counselling Platform</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAvLP2UXDZbStQcISPsTXFtUrDPTG8yRl0",
+      authDomain: "student-counselling-c6395.firebaseapp.com",
+      projectId: "student-counselling-c6395",
+      storageBucket: "student-counselling-c6395.appspot.com",
+      messagingSenderId: "959304254300",
+      appId: "1:959304254300:web:06533ac4c1efe5c3da7799"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadBookings() {
       const card = document.querySelector('.card');
-      card.innerHTML = '<h3>Upcoming Sessions</h3>';
-      if (sessions.length > 0) {
-        sessions.forEach(session => {
-          card.innerHTML += `<p><strong>Status:</strong> ${session.Status}<br><strong>Counselors:</strong> ${session.CounselorIDs.join(', ')}<br><strong>Time:</strong> ${new Date(session.Start).toLocaleString()}</p>`;
-        });
-      } else {
-        card.innerHTML += '<p>No active bookings. Click below to schedule.</p><a href="book.html" style="color: #b5838d; font-weight: bold;">Book a Session</a>';
+      try {
+        const querySnapshot = await getDocs(collection(db, "bookings"));
+        card.innerHTML = '<h3>Upcoming Sessions</h3>';
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            const session = doc.data();
+            card.innerHTML += `<p><strong>Status:</strong> ${session.Status || 'Booked'}<br><strong>Counselor:</strong> ${session.Counselor || 'N/A'}<br><strong>Date:</strong> ${session.Date || 'N/A'}</p>`;
+          });
+        } else {
+          card.innerHTML += '<p>No active bookings. Click below to schedule.</p><a href="book.html" style="color: #b5838d; font-weight: bold;">Book a Session</a>';
+        }
+      } catch (error) {
+        console.error("Error loading bookings:", error);
+        card.innerHTML = '<h3>Upcoming Sessions</h3><p>Error loading bookings.</p>';
       }
-    })
-    .catch(error => console.error('Error loading schedule:', error));
-</script>
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAvlP2UXDZbStQcISpsTXFtUrDPTG8yRl0",
-    authDomain: "student-counselling-c6395.firebaseapp.com",
-    projectId: "student-counselling-c6395",
-    storageBucket: "student-counselling-c6395.firebasestorage.app",
-    messagingSenderId: "959304254300",
-    appId: "1:959304254300:web:06533ac4c1efe5c3da7799",
-    measurementId: "G-7L99MLL758"
-  };
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+    }
+
+    loadBookings();
+  </script>
 </body>
 </html>
