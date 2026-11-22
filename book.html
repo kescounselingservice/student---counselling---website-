@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Session - MindSpace</title>
+    <title>Book Session - MindSpace | KES Counselling Service</title>
     <style>
         body {
             background-color: #fdf4f5;
@@ -29,12 +29,15 @@
         main {
             flex: 1;
             padding: 40px 20px;
-            max-width: 600px;
+            max-width: 680px;
+            width: 100%;
+            box-sizing: border-box;
             margin: 0 auto;
             text-align: center;
         }
         h1 {
             color: #b5838d;
+            margin-bottom: 24px;
         }
         .form-group {
             margin-bottom: 20px;
@@ -44,6 +47,7 @@
             display: block;
             margin-bottom: 5px;
             color: #6d6875;
+            font-weight: 600;
         }
         input, select, textarea {
             width: 100%;
@@ -51,6 +55,9 @@
             border: 1px solid #c9ada7;
             border-radius: 5px;
             box-sizing: border-box;
+            font-family: inherit;
+            background-color: #ffffff;
+            color: #4a4a4a;
         }
         .btn {
             background-color: #c9ada7;
@@ -58,143 +65,189 @@
             padding: 15px 30px;
             border: none;
             border-radius: 25px;
-            font-weight: bold;
             cursor: pointer;
             font-size: 1rem;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #b5838d;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         footer {
             background-color: #f4a261;
             text-align: center;
-            padding: 10px;
-            font-size: 0.8rem;
+            padding: 15px;
+            font-size: 0.85rem;
+            color: #4a4a4a;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="book.html">Book Session</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-    </header>
 
-    <main>
-        <h1>Book a Counseling Session</h1>
-        <form id="bookingForm">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Student Email</label>
-                <input type="email" id="email" required>
-            </div>
-            <div class="form-group">
-                <label for="counselor">Select Counselor</label>
-                <select id="counselor">
-                    <option value="Group Support">Group Support</option>
-                    <option value="Individual Counseling">Individual Counseling</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="date">Preferred Date</label>
-                <input type="date" id="date" required>
-            </div>
-            <button type="submit" class="btn">Confirm Booking</button>
-        </form>
-    </main>
+<header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="book.html">Book Session</a>
+        <a href="dashboard.html">Dashboard</a>
+    </nav>
+</header>
 
-    <footer>
-        <p>&copy; 2026 MindSpace Student Counseling</p>
-    </footer>
+<main>
+    <h1>Book a Counselling Session</h1>
+    <form id="bookingForm">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your full name">
+        </div>
 
-    <!-- Firebase SDKs -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        <div class="form-group">
+            <label for="email">Student Email</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email address">
+        </div>
 
-        // TODO: Replace with your actual Firebase configuration 
+        <div class="form-group">
+            <label for="counselor">Select Counsellor</label>
+            <select id="counselor" name="counselor" required>
+                <option value="" disabled selected>Choose a counsellor</option>
+                <option value="Vainavi Ma'am">Vainavi Ma'am</option>
+                <option value="Kinnari Ma'am">Kinnari Ma'am</option>
+                <option value="Group Support">Group Support</option>
+                <option value="Individual Counselling">Individual Counselling</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Preferred Date &amp; Slot</label>
+            <input type="datetime-local" id="date" name="date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Brief Note (Optional)</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Anything you'd like your counsellor to know beforehand..."></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn">Confirm Booking</button>
+    </form>
+</main>
+
+<footer>
+    <p>&copy; 2026 MindSpace — KES Counselling Service</p>
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAvlP2UXDZbStQcISpsTXFtUrDPTG8yRl0",
-  authDomain: "student-counselling-c6395.firebaseapp.com",
-  projectId: "student-counselling-c6395",
-  storageBucket: "student-counselling-c6395.firebasestorage.app",
-  messagingSenderId: "959304254300",
-  appId: "1:959304254300:web:e4161f9857aa39b8da7799",
-  measurementId: "G-NYPXX2PXC9"
-};
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const firebaseConfig = {
+        apiKey: "AIzaSyAvlP2UXDZbStQcISpsTXFtUrDPTG8yRl0",
+        authDomain: "student-counselling-c6395.firebaseapp.com",
+        projectId: "student-counselling-c6395",
+        storageBucket: "student-counselling-c6395.firebasestorage.app",
+        messagingSenderId: "959304254300",
+        appId: "1:959304254300:web:e4161f9857aa39b8da7799",
+        measurementId: "G-NYPXX2PXC9"
+    };
 
-        // Fetch schedule and populate date dropdown
-        document.addEventListener('DOMContentLoaded', () => {
-            fetch('Schedule.json')
-            .then(response => response.json())
-            .then(data => {
-                const schedule = data.Schedule;
-                const dateInput = document.getElementById('date');
-                if (dateInput) {
-                    const select = document.createElement('select');
-                    select.id = 'date';
-                    select.name = 'date';
-                    select.required = true;
-                    Object.keys(schedule).forEach(day => {
-                        const optgroup = document.createElement('optgroup');
-                        optgroup.label = day;
-                        schedule[day].forEach(slot => {
-                            const option = document.createElement('option');
-                            option.value = slot.Start;
-                            option.textContent = `${new Date(slot.Start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - Counselor: ${slot.Counselor}`;
-                            optgroup.appendChild(option);
-                        });
-                        select.appendChild(optgroup);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Populate slots from Schedule.json if available
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch("Schedule.json")
+            .then((response) => (response.ok ? response.json() : null))
+            .then((data) => {
+                if (!data) return;
+                const dateInput = document.getElementById("date");
+                if (!dateInput) return;
+
+                const select = document.createElement("select");
+                select.id = "date";
+                select.name = "date";
+                select.required = true;
+
+                const defaultOpt = document.createElement("option");
+                defaultOpt.value = "";
+                defaultOpt.textContent = "Select an available slot";
+                defaultOpt.disabled = true;
+                defaultOpt.selected = true;
+                select.appendChild(defaultOpt);
+
+                Object.keys(data).forEach((day) => {
+                    const slots = Array.isArray(data[day]) ? data[day] : [];
+                    if (slots.length === 0) return;
+
+                    const optgroup = document.createElement("optgroup");
+                    optgroup.label = day;
+
+                    slots.forEach((slot) => {
+                        const option = document.createElement("option");
+                        const val = typeof slot === "string" ? `${day} - ${slot}` : slot;
+                        option.value = val;
+                        option.textContent = val;
+                        optgroup.appendChild(option);
                     });
+
+                    select.appendChild(optgroup);
+                });
+
+                if (select.options.length > 1) {
                     dateInput.parentNode.replaceChild(select, dateInput);
                 }
             })
-            .catch(error => console.error('Error loading schedule:', error));
+            .catch((err) => console.error("Schedule load fallback:", err));
+    });
 
-            // Handle Form Submission
-            const bookingForm = document.getElementById('bookingForm');
-            if (bookingForm) {
-                bookingForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const submitBtn = bookingForm.querySelector('button[type="submit"]');
-                    submitBtn.textContent = 'Saving...';
-                    submitBtn.disabled = true;
+    // Handle Form Submission
+    const bookingForm = document.getElementById("bookingForm");
+    const submitBtn = document.getElementById("submitBtn");
 
-                    const name = document.getElementById('name').value;
-                    const email = document.getElementById('email').value;
-                    const counselor = document.getElementById('counselor').value;
-                    const dateSelect = document.getElementById('date');
-                    const dateValue = dateSelect.value;
-                    const counselorName = dateSelect.options[dateSelect.selectedIndex].text.split(' - Counselor: ')[1] || counselor;
+    if (bookingForm) {
+        bookingForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-                    try {
-                        const docRef = await addDoc(collection(db, "Bookings"), {
-                            studentName: name,
-                            studentEmail: email,
-                            counselor: counselorName,
-                            bookingTime: dateValue,
-                            status: "confirmed",
-                            createdAt: new Date().toISOString()
-                        });
-                        alert('Booking confirmed!');
-                        bookingForm.reset();
-                        window.location.href = 'dashboard.html';
-                    } catch (error) {
-                        console.error('Error adding document: ', error);
-                        alert('Failed to save booking. Please try again.');
-                    } finally {
-                        submitBtn.textContent = 'Confirm Booking';
-                        submitBtn.disabled = false;
-                    }
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = "Saving...";
+            submitBtn.disabled = true;
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const counselorSelect = document.getElementById("counselor");
+            const counselor = counselorSelect.value;
+            const dateEl = document.getElementById("date");
+            const bookingTime = dateEl.value;
+            const notes = document.getElementById("notes")?.value.trim() || "";
+
+            try {
+                await addDoc(collection(db, "bookings"), {
+                    studentName: name,
+                    studentEmail: email,
+                    counselor: counselor,
+                    bookingTime: bookingTime,
+                    notes: notes,
+                    status: "confirmed",
+                    createdAt: new Date().toISOString()
                 });
+
+                alert("Booking confirmed!");
+                bookingForm.reset();
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                console.error("Error adding booking:", error);
+                alert("Failed to save booking. Please check Firebase Firestore rules and try again.");
+            } finally {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
             }
         });
-    </script>
+    }
+</script>
+
 </body>
 </html>
