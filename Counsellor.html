@@ -1,163 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Counselor Portal - MindSpace</title>
-    <style>
-        :root {
-            --bg: #fdf6f5;
-            --header-bg: #f6b5ac;
-            --card-bg: #ffffff;
-            --primary: #a67c7c;
-            --primary-dark: #8c6464;
-            --text: #3d2c2e;
-            --muted: #7a6567;
-            --border: #ead8d6;
-        }
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { margin: 0; background: var(--bg); color: var(--text); }
-        header { background: var(--header-bg); padding: 16px 20px; text-align: center; }
-        header h1 { margin: 0 0 10px; font-size: 1.8rem; color: #fff; }
-        nav a { text-decoration: none; color: #5e3a3d; font-weight: 600; margin: 0 10px; font-size: 14px; }
-        .container { max-width: 800px; margin: 24px auto; padding: 0 20px; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        h3 { margin-top: 0; color: var(--primary-dark); }
-        .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
-        .badge-pending { background: #fff3cd; color: #856404; }
-        .badge-confirmed { background: #d4edda; color: #155724; }
-        .detail-row { margin: 6px 0; font-size: 14px; }
-        .detail-label { font-weight: 700; color: var(--muted); }
-        button { width: 100%; padding: 12px; margin-top: 14px; background: var(--primary); color: #fff; border: none; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; }
-        button:hover { background: var(--primary-dark); }
-        .btn-logout { background: transparent; color: var(--primary-dark); border: 1px solid var(--primary); width: auto; padding: 8px 16px; font-size: 13px; margin-top: 0; }
-        .btn-logout:hover { background: var(--primary); color: white; }
-    </style>
-</head>
-<body>
+const COUNSELLORS = {
+  "VAINAVI MAM": { displayName: "Vainavi Ma'am" },
+  "KINNARI MAM": { displayName: "Kinnari Ma'am" }
+};
 
-<header>
-    <h1>MindSpace Platform</h1>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="book.html">Book Session</a>
-        <a href="dashboard.html">Student Dashboard</a>
-    </nav>
-</header>
+window.addEventListener('DOMContentLoaded', () => {
+  const savedCounsellor = sessionStorage.getItem("activeCounsellor");
+  if (savedCounsellor && COUNSELLORS[savedCounsellor]) {
+    showDashboard(COUNSELLORS[savedCounsellor].displayName);
+  } else {
+    window.location.href = "index.html";
+  }
+});
 
-<div class="container">
-    <div class="top-bar">
-        <div>
-            <span style="font-size: 13px; color: var(--muted);">Logged in as:</span>
-            <h3 id="counsellorTitle" style="margin: 2px 0 0;">Counselor</h3>
+function showDashboard(displayName) {
+  document.getElementById("CounsellorTitle").innerText = displayName;
+  renderBookings(displayName);
+}
+
+function getBookings() {
+  const possibleKeys = ["mindspace_bookings"];
+  for (const key of possibleKeys) {
+    const data = localStorage.getItem(key);
+    if (data) {
+      try {
+        return { storageKey: key, list: JSON.parse(data) };
+      } catch (e) {
+        console.error("Error parsing bookings data", e);
+      }
+    }
+  }
+  return { storageKey: null, list: [] };
+}
+
+function renderBookings(displayName) {
+  const container = document.getElementById("bookingsList");
+  const { storageKey, list } = getBookings();
+
+  if (!storageKey || list.length === 0) {
+    container.innerHTML = '<div><p>No pending or confirmed sessions found.</p></div>';
+    return;
+  }
+
+  const relevant = list.filter(b => b.counsellor === "Group Support" || b.counsellor === "Individual Counsellor");
+
+  if (relevant.length === 0) {
+    container.innerHTML = '<div><p>No counseling sessions found.</p></div>';
+    return;
+  }
+
+  container.innerHTML = relevant.map((b, index) => {
+    const origIndex = list.findIndex(item => item === b);
+    let statusBadge = '';
+    let actionBtn = '';
+
+    if (b.status === "confirmed") {
+      statusBadge = '<span class="badge badge-confirmed">Confirmed</span>';
+      actionBtn = `
+        <button onclick="rescheduleBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-primary">Reschedule</button>
+        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-danger">Decline</button>
+      `;
+    } else if (b.status === "rescheduled") {
+      statusBadge = '<span class="badge badge-warning">Rescheduled</span>';
+      actionBtn = `
+        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-primary">Approve</button>
+        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-danger">Decline</button>
+      `;
+    } else if (b.status === "declined") {
+      statusBadge = '<span class="badge badge-danger">Declined</span>';
+      actionBtn = `
+        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-primary">Approve</button>
+      `;
+    } else {
+      // Pending
+      statusBadge = '<span class="badge badge-pending">Pending Approval</span>';
+      actionBtn = `
+        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-primary">Approve</button>
+        <button onclick="rescheduleBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-secondary">Reschedule</button>
+        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-danger">Decline</button>
+      `;
+    }
+
+    return `
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+          <h3 style="margin: 0;">${b.fullName} | Student</h3>
+          <span style="font-size: 13px; color: var(--muted);">${b.date}</span>
         </div>
-        <button class="btn-logout" onclick="logout()">Logout</button>
-    </div>
+        <div>
+          ${statusBadge}
+        </div>
+        <div class="detail-row"><span class="detail-label">Service:</span><span>${b.service}</span></div>
+        <div class="detail-row"><span class="detail-label">Date & Time:</span><span>${b.date} at ${b.time}</span></div>
+        <div class="detail-row"><span class="detail-label">Notes:</span><div>${b.notes || 'N/A'}</div></div>
+        <div class="detail-row" style="margin-top: 15px; gap: 10px;">
+          ${actionBtn}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
 
-    <div id="bookingsList">Loading sessions...</div>
-</div>
-
-<script>
-    const COUNSELLERS = {
-        "VAINAVI MAM": { displayName: "Vainavi Ma'am" },
-        "KINNARI MAM": { displayName: "Kinnari Ma'am" }
-    };
-
-    window.addEventListener("DOMContentLoaded", () => {
-        const savedCounsellor = sessionStorage.getItem("activeCounsellor") || localStorage.getItem("activeCounsellor");
-        if (savedCounsellor && COUNSELLERS[savedCounsellor]) {
-            showDashboard(COUNSELLERS[savedCounsellor].displayName);
-        } else {
-            window.location.href = "index.html";
-        }
-    });
-
-    function showDashboard(displayName) {
-        document.getElementById("counsellorTitle").textContent = displayName;
-        renderBookings(displayName);
+function updateBookingStatus(storageKey, index, newStatus, displayName) {
+  try {
+    const raw = localStorage.getItem(storageKey);
+    if (!raw) return;
+    const list = JSON.parse(raw);
+    if (list[index]) {
+      list[index].status = newStatus;
+      list[index].approvedBy = displayName;
+      localStorage.setItem(storageKey, JSON.stringify(list));
+      renderBookings(displayName);
     }
+  } catch (e) {
+    console.error(`Failed to update booking to ${newStatus}`, e);
+  }
+}
 
-    function getBookings() {
-        const possibleKeys = ["mindspace_bookings", "bookings", "session_bookings"];
-        for (const key of possibleKeys) {
-            const data = localStorage.getItem(key);
-            if (data) {
-                try {
-                    return { storageKey: key, list: JSON.parse(data) };
-                } catch(e) {
-                    console.error("Error parsing storage key", key, e);
-                }
-            }
-        }
-        return { storageKey: "mindspace_bookings", list: [] };
-    }
+function approveBooking(storageKey, index, displayName) {
+  updateBookingStatus(storageKey, index, "confirmed", displayName);
+}
 
-    function renderBookings(displayName) {
-        const container = document.getElementById("bookingsList");
-        const { storageKey, list } = getBookings();
-        
-        const relevant = list.filter(b => 
-            b.counsellor === displayName || 
-            b.counsellor === "Group Support" || 
-            b.counsellor === "Individual Counselling"
-        );
+function rescheduleBooking(storageKey, index, displayName) {
+  updateBookingStatus(storageKey, index, "rescheduled", displayName);
+}
 
-        if (relevant.length === 0) {
-            container.innerHTML = '<div class="card"><p>No pending or confirmed sessions found for your queue.</p></div>';
-            return;
-        }
+function declineBooking(storageKey, index, displayName) {
+  updateBookingStatus(storageKey, index, "declined", displayName);
+}
 
-        container.innerHTML = relevant.map((b, index) => {
-            const isPending = (!b.status || b.status === "pending");
-            const statusBadge = isPending 
-                ? '<span class="badge badge-pending">Pending Approval</span>' 
-                : '<span class="badge badge-confirmed">Confirmed</span>';
-            
-            const actionBtn = isPending 
-                ? `<button onclick="approveBooking('${storageKey}', ${index}, '${displayName}')">Approve Session</button>` 
-                : '';
-
-            return `
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                        <div>
-                            <h3 style="margin: 0;">${b.name || b.fullName || 'Student Session'}</h3>
-                            <span style="font-size: 13px; color: var(--muted);">${b.email || ''}</span>
-                        </div>
-                        ${statusBadge}
-                    </div>
-                    <div class="detail-row"><span class="detail-label">Service:</span> ${b.counsellor}</div>
-                    <div class="detail-row"><span class="detail-label">Date & Time:</span> ${b.date} at ${b.time}</div>
-                    ${b.notes ? `<div class="detail-row"><span class="detail-label">Notes:</span> ${b.notes}</div>` : ''}
-                    ${actionBtn}
-                </div>
-            `;
-        }).join("");
-    }
-
-    function approveBooking(storageKey, index, displayName) {
-        const raw = localStorage.getItem(storageKey);
-        if (!raw) return;
-        try {
-            const list = JSON.parse(raw);
-            if (list[index]) {
-                list[index].status = "confirmed";
-                list[index].approvedBy = displayName;
-                localStorage.setItem(storageKey, JSON.stringify(list));
-                renderBookings(displayName);
-            }
-        } catch(e) {
-            console.error("Failed to approve booking", e);
-        }
-    }
-
-    function logout() {
-        sessionStorage.removeItem("activeCounsellor");
-        localStorage.removeItem("activeCounsellor");
-        window.location.href = "index.html";
-    }
-</script>
-</body>
-</html>
+function logout() {
+  sessionStorage.removeItem("activeCounsellor");
+  sessionStorage.removeItem("activeCounsellor");
+  localStorage.removeItem("activeCounsellor");
+  window.location.href = "index.html";
+}
