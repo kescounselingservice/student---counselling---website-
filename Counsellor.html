@@ -1,6 +1,6 @@
 const COUNSELLORS = {
-  "VAINAVI MAM": { displayName: "Vainavi Ma'am" },
-  "KINNARI MAM": { displayName: "Kinnari Ma'am" }
+  "VAINAVI MAM": { displayName: 'Vainavi Ma\'am' },
+  "KINNARI MAM": { displayName: 'Kinnari Ma\'am' }
 };
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -41,7 +41,7 @@ function renderBookings(displayName) {
     return;
   }
 
-  const relevant = list.filter(b => b.counsellor === "Group Support" || b.counsellor === "Individual Counsellor");
+  const relevant = list.filter(b => b.counsellor === displayName);
 
   if (relevant.length === 0) {
     container.innerHTML = '<div><p>No counseling sessions found.</p></div>';
@@ -56,43 +56,37 @@ function renderBookings(displayName) {
     if (b.status === "confirmed") {
       statusBadge = '<span class="badge badge-confirmed">Confirmed</span>';
       actionBtn = `
-        <button onclick="rescheduleBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-primary">Reschedule</button>
-        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-danger">Decline</button>
+        <button onclick="rescheduleBooking('${storageKey}', ${origIndex}, '${displayName}')">Reschedule</button>
+        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')">Decline</button>
       `;
     } else if (b.status === "rescheduled") {
       statusBadge = '<span class="badge badge-warning">Rescheduled</span>';
       actionBtn = `
-        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-primary">Approve</button>
-        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-danger">Decline</button>
+        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')">Approve</button>
+        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')">Decline</button>
       `;
     } else if (b.status === "declined") {
       statusBadge = '<span class="badge badge-danger">Declined</span>';
-      actionBtn = `
-        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-primary">Approve</button>
-      `;
+      actionBtn = `<button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')">Approve</button>`;
     } else {
-      // Pending
       statusBadge = '<span class="badge badge-pending">Pending Approval</span>';
       actionBtn = `
-        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-primary">Approve</button>
-        <button onclick="rescheduleBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-secondary">Reschedule</button>
-        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')" class="btn-danger">Decline</button>
+        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')">Approve</button>
+        <button onclick="rescheduleBooking('${storageKey}', ${origIndex}, '${displayName}')">Reschedule</button>
+        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')">Decline</button>
       `;
     }
 
     return `
       <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: start;">
-          <h3 style="margin: 0;">${b.fullName} | Student</h3>
-          <span style="font-size: 13px; color: var(--muted);">${b.date}</span>
-        </div>
-        <div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="margin: 0;">${b.fullName}</h3>
           ${statusBadge}
         </div>
-        <div class="detail-row"><span class="detail-label">Service:</span><span>${b.service}</span></div>
-        <div class="detail-row"><span class="detail-label">Date & Time:</span><span>${b.date} at ${b.time}</span></div>
-        <div class="detail-row"><span class="detail-label">Notes:</span><div>${b.notes || 'N/A'}</div></div>
-        <div class="detail-row" style="margin-top: 15px; gap: 10px;">
+        <div class="detail-row"><span class="detail-label">Service:</span> ${b.service}</div>
+        <div class="detail-row"><span class="detail-label">Date & Time:</span>${b.date} at ${b.time}</div>
+        <div class="detail-row"><span class="detail-label">Notes:</span>${b.notes || 'N/A'}</div>
+        <div class="detail-row" style="margin-top: 15px; display: flex; gap: 10px;">
           ${actionBtn}
         </div>
       </div>
@@ -129,7 +123,6 @@ function declineBooking(storageKey, index, displayName) {
 }
 
 function logout() {
-  sessionStorage.removeItem("activeCounsellor");
   sessionStorage.removeItem("activeCounsellor");
   localStorage.removeItem("activeCounsellor");
   window.location.href = "index.html";
