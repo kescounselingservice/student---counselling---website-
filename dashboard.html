@@ -46,7 +46,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .booking-item {
-            border-bottom: 1px solid #eee;
+            border-bottom: 2px solid #fdf4f5;
             padding-bottom: 15px;
             margin-bottom: 15px;
         }
@@ -85,36 +85,45 @@
         <p>&copy; 2026 MindSpace - KES Counselling Service</p>
     </footer>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAv1P2UDZBStQcISpSTXFtUrDPTG8Yrf4w",
+            authDomain: "student-counselling-c6395.firebaseapp.com",
+            projectId: "student-counselling-c6395",
+            storageBucket: "student-counselling-c6395.appspot.com",
+            messagingSenderId: "95930424300",
+            appId: "1:95930424300:web:e4161f9857aa39b8da779a",
+            measurementId: "G-NYPXX2PXC9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         async function loadBookings() {
             const container = document.getElementById('bookingsList');
             try {
-                const response = await fetch('Schedule.json');
-                const data = await response.json();
+                const querySnapshot = await getDocs(collection(db, "bookings"));
                 container.innerHTML = '';
                 
-                let hasBookings = false;
-                if (data.Schedule) {
-                    for (const day in data.Schedule) {
-                        data.Schedule[day].forEach(session => {
-                            if (session.Status === 'Booked') {
-                                hasBookings = true;
-                                const item = document.createElement('div');
-                                item.className = 'booking-item';
-                                item.innerHTML = `
-                                    <p><strong>Status:</strong> ${session.Status}</p>
-                                    <p><strong>Counsellor:</strong> ${session.CounselorIDs ? session.CounselorIDs.join(', ') : 'N/A'}</p>
-                                    <p><strong>Date & Time:</strong> ${session.Start}</p>
-                                `;
-                                container.appendChild(item);
-                            }
-                        });
-                    }
-                }
-                
-                if (!hasBookings) {
+                if (querySnapshot.empty) {
                     container.innerHTML = '<p>No active bookings.</p>';
+                    return;
                 }
+
+                querySnapshot.forEach((doc) => {
+                    const session = doc.data();
+                    const item = document.createElement('div');
+                    item.className = 'booking-item';
+                    item.innerHTML = `
+                        <p><strong>Status:</strong> ${session.status || 'Pending'}</p>
+                        <p><strong>Counsellor:</strong> ${session.counsellor || 'N/A'}</p>
+                        <p><strong>Date & Time:</strong> ${session.bookingTime ? new Date(session.bookingTime).toLocaleString() : 'N/A'}</p>
+                    `;
+                    container.appendChild(item);
+                });
             } catch (error) {
                 console.error("Error loading bookings:", error);
                 container.innerHTML = '<p>Error loading bookings.</p>';
