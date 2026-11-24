@@ -3,89 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Counsellor Portal - MindSpace</title>
+    <title>Counsellor Portal - MindSpace / KES Shroff College</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf4f5; color: #4a4a4a; margin: 0; padding: 0; }
-        .container { max-width: 800px; margin: 40px auto; padding: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fce4ec; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 40px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         h1 { color: #b5838d; text-align: center; margin-bottom: 30px; }
-        .appointment-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; margin-right: 10px; }
-        .btn-accept { background-color: #28a745; }
-        .btn-decline { background-color: #dc3545; }
+        .appointment-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-right: 10px; }
+        .btn-accept { background-color: #28a745; color: white; }
+        .btn-decline { background-color: #dc3545; color: white; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Counsellor Dashboard</h1>
-        <div id="appointment-list">Loading appointments...</div>
-    </div>
+<div class="container">
+    <h1>Counsellor Dashboard</h1>
+    <div id="appointment-list">Loading appointments...</div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAv1P2UDZBStQcISpSTXFtUrDPTG8Yrf4w",
-            authDomain: "student-counselling-c6395.firebaseapp.com",
-            projectId: "student-counselling-c6395",
-            storageBucket: "student-counselling-c6395.appspot.com",
-            messagingSenderId: "95930424300",
-            appId: "1:95930424300:web:e4161f9857aa39b8da779a",
-            measurementId: "G-NYPXX2PXC9"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyAv1P2UDZBStQcISPTSXftUrDPTG8Yrf4w",
+        authDomain: "student-counselling-c6395.firebaseapp.com",
+        projectId: "student-counselling-c6395",
+        storageBucket: "student-counselling-c6395.appspot.com",
+        messagingSenderId: "95930424300",
+        appId: "1:95930424300:web:e4161f9857aa39b8da779a",
+        measurementId: "G-NYPXX2PXC9"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        async function loadAppointments() {
-            const container = document.getElementById('appointment-list');
-            try {
-                const q = query(collection(db, "bookings"), where("counsellor", "==", "Vainavi Ma'am"));
-                const querySnapshot = await getDocs(q);
-                container.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    container.innerHTML = '<p>No appointments found for Vainavi Ma\'am.</p>';
-                    return;
-                }
+    async function loadAppointments() {
+        const container = document.getElementById('appointment-list');
+        try {
+            const q = query(collection(db, "bookings"), where("counsellor", "==", "Vainavi Ma'am"));
+            const querySnapshot = await getDocs(q);
+            container.innerHTML = '';
 
-                querySnapshot.forEach((docSnap) => {
-                    const session = docSnap.data();
-                    const card = document.createElement('div');
-                    card.className = 'appointment-card';
-                    card.innerHTML = `
-                        <h3>Student: ${session.studentName || 'N/A'}</h3>
-                        <p><strong>Email:</strong> ${session.studentEmail || 'N/A'}</p>
-                        <p><strong>Status:</strong> <span id="status-${docSnap.id}">${session.status || 'pending'}</span></p>
-                        <p><strong>Date & Time:</strong> ${session.bookingTime ? new Date(session.bookingTime).toLocaleString() : 'N/A'}</p>
-                        <p><strong>Notes:</strong> ${session.notes || 'None'}</p>
-                        <div>
-                            <button class="btn btn-accept" onclick="updateStatus('${docSnap.id}', 'Confirmed')">Accept</button>
-                            <button class="btn btn-decline" onclick="updateStatus('${docSnap.id}', 'Declined')">Decline</button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                console.error("Error loading appointments:", error);
-                container.innerHTML = '<p>Error loading appointments.</p>';
+            if (querySnapshot.empty) {
+                container.innerHTML = '<p>No appointments found for Vainavi Ma\'am.</p>';
+                return;
             }
+
+            querySnapshot.forEach((docSnap) => {
+                const session = docSnap.data();
+                const card = document.createElement('div');
+                card.className = 'appointment-card';
+                card.innerHTML = `
+                    <h3>Student: ${session.studentName || 'N/A'}</h3>
+                    <p><strong>Email:</strong> ${session.studentEmail || 'N/A'}</p>
+                    <p><strong>Status:</strong> <span id="status-${docSnap.id}">${session.status || 'Pending'}</span></p>
+                    <p><strong>Date & Time:</strong> ${session.bookingDate || 'N/A'}</p>
+                    <p><strong>Notes:</strong> ${session.notes || 'N/A'}</p>
+                    <div>
+                        <button class="btn btn-accept" onclick="updateStatus('${docSnap.id}', 'Confirmed')">Accept</button>
+                        <button class="btn btn-decline" onclick="updateStatus('${docSnap.id}', 'Declined')">Decline</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        } catch (error) {
+            console.error("Error loading appointments:", error);
+            container.innerHTML = '<p>Error loading appointments. Please check console.</p>';
         }
+    }
 
-        window.updateStatus = async (docId, newStatus) => {
-            try {
-                const docRef = doc(db, "bookings", docId);
-                await updateDoc(docRef, { status: newStatus });
-                document.getElementById(`status-${docId}`).innerText = newStatus;
-                alert(`Appointment marked as ${newStatus}.`);
-            } catch (error) {
-                console.error("Error updating status:", error);
-                alert("Failed to update status.");
-            }
-        };
+    window.updateStatus = async (docId, newStatus) => {
+        try {
+            const docRef = doc(db, "bookings", docId);
+            await updateDoc(docRef, { status: newStatus });
+            document.getElementById(`status-${docId}`).innerText = newStatus;
+            alert(`Appointment marked as ${newStatus}.`);
+        } catch (error) {
+            console.error("Error updating status:", error);
+            alert("Failed to update status.");
+        }
+    };
 
-        loadAppointments();
-    </script>
+    loadAppointments();
+</script>
 </body>
 </html>
+
