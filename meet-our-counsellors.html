@@ -1,1 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet Our Counsellors - MindSpace</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        body {
+            background-color: #fdfbfb;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: #ffffff;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        nav .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #8a2be2;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: #8a2be2;
+        }
+
+        /* Counsellor Section */
+        .counselor-section {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #1a1a1a;
+        }
+
+        .counselor-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            border: 1px solid #f0f0f0;
+            margin-bottom: 30px;
+            transition: transform 0.3s;
+        }
+
+        .counselor-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .avatar.vk {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        .avatar.km {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+
+        .info h2 {
+            margin: 0 0 5px 0;
+            color: #1a1a1a;
+            font-size: 1.75rem;
+        }
+
+        .role {
+            color: #8a2be2;
+            font-weight: 600;
+            margin: 0 0 15px 0;
+            font-size: 1rem;
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin: 0 0 20px 0;
+            font-size: 1.05rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tag {
+            background: #f4f0fa;
+            color: #7b1fa2;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .book-btn {
+            background: linear-gradient(90deg, #8a2be2 0%, #9c27b0 100%);
+            border: none;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .counselor-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            nav .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">MindSpace</div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="meet-our-counsellors.html" class="active">Meet Our Counsellors</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="counselor-section">
+        <h1 class="section-title">Meet Our Counsellors</h1>
+        
+        <div class="counselor-card">
+            <div class="avatar vk">VK</div>
+            <div class="info">
+                <h2>Vainavi Kumta</h2>
+                <p class="role">Individual Counselling • Academic Wellbeing</p>
+                <p class="description">Vainavi supports students through academic pressure, exam nerves and everyday overwhelm. Sessions are calm, structured and judgement-free.</p>
+                <div class="tags">
+                    <span class="tag">Academic stress</span>
+                    <span class="tag">Exam anxiety</span>
+                    <span class="tag">Time management</span>
+                </div>
+                <button class="book-btn" onclick="location.href='book.html'">Create an account to book</button>
+            </div>
+        </div>
+
+        <div class="counselor-card">
+            <div class="avatar km">KM</div>
+            <div class="info">
+                <h2>Kinnari Metha</h2>
+                <p class="role">Group facilitation • Peer connection</p>
+                <p class="description">Kinnari leads supportive peer circles that build social confidence, healthy communication and shared resilience.</p>
+                <div class="tags">
+                    <span class="tag">Group discussions</span>
+                    <span class="tag">Social confidence</span>
+                    <span class="tag">Collective stress management</span>
+                </div>
+                <button class="book-btn" onclick="location.href='book.html'">Create an account to book</button>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
