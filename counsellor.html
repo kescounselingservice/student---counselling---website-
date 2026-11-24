@@ -1,131 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counselor Portal - Mindspace</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f7f6; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .appointment-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        button { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; color: white; margin-left: 5px; }
+        .btn-accept { background-color: #28a745; }
+        .btn-reschedule { background-color: #ffc107; color: black; }
+        .btn-decline { background-color: #dc3545; }
+        .btn-logout { background-color: #6c757d; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Counselor Dashboard</h1>
+    <div id="appointment-list">
+        <!-- Sample Appointment -->
+        <div class="appointment-card" id="app-1">
+            <div>
+                <h3>Student: John Doe</h3>
+                <p>Time: Today at 2:00 PM</p>
+            </div>
+            <div>
+                <button class="btn-accept" onclick="handleAppointment(1, 'Accepted')">Accept</button>
+                <button class="btn-reschedule" onclick="handleAppointment(1, 'Reschedule')">Reschedule</button>
+                <button class="btn-decline" onclick="handleAppointment(1, 'Declined')">Decline</button>
+            </div>
+        </div>
+    </div>
+    
+    <button class="btn-logout" id="logoutBtn" onclick="logoutCounsellor(event)">Logout</button>
+</div>
+
 <script>
-const COUNSELLORS = {
-  "VAINAVI MAM": { displayName: 'Vainavi Ma\'am' },
-  "KINNARI MAM": { displayName: 'Kinnari Ma\'am' }
-};
-
-window.addEventListener('DOMContentLoaded', () => {
-  const savedCounsellor = sessionStorage.getItem("activeCounsellor");
-  if (savedCounsellor && COUNSELLORS[savedCounsellor]) {
-    showDashboard(COUNSELLORS[savedCounsellor].displayName);
-  } else {
-    window.location.href = "index.html";
-  }
-});
-
-function showDashboard(displayName) {
-  document.getElementById("CounsellorTitle").innerText = displayName;
-  renderBookings(displayName);
-}
-
-function getBookings() {
-  const possibleKeys = ["mindspace_bookings"];
-  for (const key of possibleKeys) {
-    const data = localStorage.getItem(key);
-    if (data) {
-      try {
-        return { storageKey: key, list: JSON.parse(data) };
-      } catch (e) {
-        console.error("Error parsing bookings data", e);
-      }
+    // 1. Auth Guard & Session Verification
+    function verifySession() {
+        const sessionUser = sessionStorage.getItem('activeCounsellor') || localStorage.getItem('activeCounsellor');
+        if (!sessionUser) {
+            window.location.replace('index.html');
+        }
     }
-  }
-  return { storageKey: null, list: [] };
-}
+    verifySession();
 
-function renderBookings(displayName) {
-  const container = document.getElementById("bookingsList");
-  const { storageKey, list } = getBookings();
+    // Prevent caching issues on mobile back button
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            verifySession();
+        }
+    });
 
-  if (!storageKey || list.length === 0) {
-    container.innerHTML = '<div><p>No pending or confirmed sessions found.</p></div>';
-    return;
-  }
+    // 2. Robust Logout Handler
+    function logoutCounsellor(event) {
+        if (event) event.preventDefault();
+        
+        // Clear potential spelling variants across storages
+        ['activeCounsellor', 'activeCounselor'].forEach((key) => {
+            sessionStorage.removeItem(key);
+            localStorage.removeItem(key);
+        });
 
-  const relevant = list.filter(b => b.counsellor === displayName);
-
-  if (relevant.length === 0) {
-    container.innerHTML = '<div><p>No counseling sessions found.</p></div>';
-    return;
-  }
-
-  container.innerHTML = relevant.map((b, index) => {
-    const origIndex = list.findIndex(item => item === b);
-    let statusBadge = '';
-    let actionBtn = '';
-
-    if (b.status === "confirmed") {
-      statusBadge = '<span class="badge badge-confirmed">Confirmed</span>';
-      actionBtn = `
-        <button onclick="rescheduleBooking('${storageKey}', ${origIndex}, '${displayName}')">Reschedule</button>
-        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')">Decline</button>
-      `;
-    } else if (b.status === "rescheduled") {
-      statusBadge = '<span class="badge badge-warning">Rescheduled</span>';
-      actionBtn = `
-        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')">Approve</button>
-        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')">Decline</button>
-      `;
-    } else if (b.status === "declined") {
-      statusBadge = '<span class="badge badge-danger">Declined</span>';
-      actionBtn = `<button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')">Approve</button>`;
-    } else {
-      statusBadge = '<span class="badge badge-pending">Pending Approval</span>';
-      actionBtn = `
-        <button onclick="approveBooking('${storageKey}', ${origIndex}, '${displayName}')">Approve</button>
-        <button onclick="rescheduleBooking('${storageKey}', ${origIndex}, '${displayName}')">Reschedule</button>
-        <button onclick="declineBooking('${storageKey}', ${origIndex}, '${displayName}')">Decline</button>
-      `;
+        window.location.replace('index.html');
     }
 
-    return `
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h3 style="margin: 0;">${b.fullName}</h3>
-          ${statusBadge}
-        </div>
-        <div class="detail-row"><span class="detail-label">Service:</span> ${b.service}</div>
-        <div class="detail-row"><span class="detail-label">Date & Time:</span>${b.date} at ${b.time}</div>
-        <div class="detail-row"><span class="detail-label">Notes:</span>${b.notes || 'N/A'}</div>
-        <div class="detail-row" style="margin-top: 15px; display: flex; gap: 10px;">
-          ${actionBtn}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function updateBookingStatus(storageKey, index, newStatus, displayName) {
-  try {
-    const raw = localStorage.getItem(storageKey);
-    if (!raw) return;
-    const list = JSON.parse(raw);
-    if (list[index]) {
-      list[index].status = newStatus;
-      list[index].approvedBy = displayName;
-      localStorage.setItem(storageKey, JSON.stringify(list));
-      renderBookings(displayName);
+    // 3. Appointment Management Logic
+    function handleAppointment(appointmentId, action) {
+        const card = document.getElementById(`app-1`);
+        // Add your backend API call here to update status
+        console.log(`Appointment ${appointmentId} status changed to: ${action}`);
+        
+        if (action === 'Accepted') {
+            alert('Appointment accepted.');
+        } else if (action === 'Declined') {
+            alert('Appointment declined.');
+            card.remove(); // Remove from UI
+        } else if (action === 'Reschedule') {
+            const newTime = prompt("Enter new proposed time:");
+            if (newTime) {
+                alert(`Reschedule request sent for: ${newTime}`);
+            }
+        }
     }
-  } catch (e) {
-    console.error(`Failed to update booking to ${newStatus}`, e);
-  }
-}
-
-function approveBooking(storageKey, index, displayName) {
-  updateBookingStatus(storageKey, index, "confirmed", displayName);
-}
-
-function rescheduleBooking(storageKey, index, displayName) {
-  updateBookingStatus(storageKey, index, "rescheduled", displayName);
-}
-
-function declineBooking(storageKey, index, displayName) {
-  updateBookingStatus(storageKey, index, "declined", displayName);
-}
-
-function logout() {
-  sessionStorage.removeItem("activeCounsellor");
-  localStorage.removeItem("activeCounsellor");
-  window.location.href = "index.html";
-}
 </script>
+
+</body>
+</html>
