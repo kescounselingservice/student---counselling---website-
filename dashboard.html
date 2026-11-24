@@ -30,6 +30,8 @@
             flex: 1;
             padding: 40px 20px;
             max-width: 800px;
+            width: 100%;
+            box-sizing: border-box;
             margin: 0 auto;
         }
         h1 {
@@ -42,14 +44,6 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        h3 {
-            color: #b5838d;
-            margin-top: 0;
-        }
-        p {
-            line-height: 1.6;
-            color: #6d6875;
         }
         .booking-item {
             border-bottom: 1px solid #eee;
@@ -88,7 +82,7 @@
 </main>
 
 <footer>
-    <p>&copy; 2026 MindSpace — KES Counselling Service</p>
+    <p>&copy; 2026 MindSpace - KES Counselling Service</p>
 </footer>
 
 <script type="module">
@@ -96,10 +90,10 @@
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyAvlP2UXDZbStQcISpsTXFtUrDPTG8yRl0",
+        apiKey: "AIzaSyAv1P2UXDZbStQcIsPsTXFtUrDPTG8yRl0",
         authDomain: "student-counselling-c6395.firebaseapp.com",
         projectId: "student-counselling-c6395",
-        storageBucket: "student-counselling-c6395.firebasestorage.app",
+        storageBucket: "student-counselling-c6395.appspot.com",
         messagingSenderId: "959304254300",
         appId: "1:959304254300:web:06533ac4c1efe5c3da7799"
     };
@@ -112,7 +106,7 @@
         try {
             const querySnapshot = await getDocs(collection(db, "bookings"));
             container.innerHTML = '';
-            
+
             if (querySnapshot.empty) {
                 container.innerHTML = '<p>No active bookings. Click below to schedule.</p>';
                 return;
@@ -120,16 +114,33 @@
 
             querySnapshot.forEach((doc) => {
                 const session = doc.data();
+                
                 const status = session.status || 'Booked';
-                const counselor = session.counselor || 'N/A';
-                const bookingTime = session.bookingTime ? new Date(session.bookingTime).toLocaleString() : 'N/A';
+                
+                let counselorName = 'N/A';
+                if (typeof session.counselor === 'object' && session.counselor !== null) {
+                    counselorName = session.counselor.name || session.counselor.value || 'Selected Counsellor';
+                } else if (typeof session.counselor === 'string') {
+                    counselorName = session.counselor;
+                }
+
+                let formattedDate = 'N/A';
+                if (session.bookingTime) {
+                    const dateObj = typeof session.bookingTime === 'object' && session.bookingTime.toDate 
+                        ? session.bookingTime.toDate() 
+                        : new Date(session.bookingTime);
+                    
+                    if (!isNaN(dateObj.getTime())) {
+                        formattedDate = dateObj.toLocaleString();
+                    }
+                }
 
                 const item = document.createElement('div');
                 item.className = 'booking-item';
                 item.innerHTML = `
                     <p><strong>Status:</strong> ${status}</p>
-                    <p><strong>Counsellor:</strong> ${counselor}</p>
-                    <p><strong>Date & Time:</strong> ${bookingTime}</p>
+                    <p><strong>Counsellor:</strong> ${counselorName}</p>
+                    <p><strong>Date & Time:</strong> ${formattedDate}</p>
                 `;
                 container.appendChild(item);
             });
