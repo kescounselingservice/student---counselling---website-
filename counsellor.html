@@ -23,6 +23,7 @@
             <div class="appointment-card" id="app-1">
                 <div>
                     <h3>Student: John Doe</h3>
+                    <p>Status: Booked</p>
                     <p>Time: Today at 2:00 PM</p>
                 </div>
                 <div>
@@ -45,11 +46,13 @@
 
         function handleAppointment(id, action) {
             const card = document.getElementById(`app-${id}`);
+            const statusText = card.querySelector('p');
             if (action === 'Accepted') {
                 alert('Appointment accepted.');
+                statusText.innerHTML = 'Status: Accepted';
             } else if (action === 'Declined') {
                 alert('Appointment declined.');
-                card.remove();
+                statusText.innerHTML = 'Status: Declined';
             }
         }
 
