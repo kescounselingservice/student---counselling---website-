@@ -3,89 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Counselor Portal - Mindspace</title>
+    <title>Counselor Portal - MindSpace</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f7f6; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .appointment-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
-        button { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; color: white; margin-left: 5px; }
-        .btn-accept { background-color: #28a745; }
+        body { font-family: sans-serif; padding: 20px; background-color: #fdf4f5; }
+        .container { max-width: 800px; margin: auto; }
+        .appointment-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; background: white; border-radius: 8px; }
+        button { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-accept { background-color: #28a745; color: white; }
         .btn-reschedule { background-color: #ffc107; color: black; }
-        .btn-decline { background-color: #dc3545; }
-        .btn-logout { background-color: #6c757d; margin-top: 20px; }
+        .btn-decline { background-color: #dc3545; color: white; }
+        .reschedule-section { margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Counselor Dashboard</h1>
-    <div id="appointment-list">
-        <!-- Sample Appointment -->
-        <div class="appointment-card" id="app-1">
-            <div>
-                <h3>Student: John Doe</h3>
-                <p>Time: Today at 2:00 PM</p>
-            </div>
-            <div>
-                <button class="btn-accept" onclick="handleAppointment(1, 'Accepted')">Accept</button>
-                <button class="btn-reschedule" onclick="handleAppointment(1, 'Reschedule')">Reschedule</button>
-                <button class="btn-decline" onclick="handleAppointment(1, 'Declined')">Decline</button>
+    <div class="container">
+        <h1>Counselor Dashboard</h1>
+        <div id="appointment-list">
+            <div class="appointment-card" id="app-1">
+                <div>
+                    <h3>Student: John Doe</h3>
+                    <p>Time: Today at 2:00 PM</p>
+                </div>
+                <div>
+                    <button class="btn-accept" onclick="handleAppointment('1', 'Accepted')">Accept</button>
+                    <button class="btn-reschedule" onclick="showRescheduleSection('1')">Reschedule</button>
+                    <button class="btn-decline" onclick="handleAppointment('1', 'Declined')">Decline</button>
+                </div>
+                <div id="reschedule-section-1" class="reschedule-section">
+                    <input type="datetime-local" id="new-time-1">
+                    <button onclick="submitReschedule('1')">Confirm New Time</button>
+                </div>
             </div>
         </div>
     </div>
-    
-    <button class="btn-logout" id="logoutBtn" onclick="logoutCounsellor(event)">Logout</button>
-</div>
 
-<script>
-    // 1. Auth Guard & Session Verification
-    function verifySession() {
-        const sessionUser = sessionStorage.getItem('activeCounsellor') || localStorage.getItem('activeCounsellor');
-        if (!sessionUser) {
-            window.location.replace('index.html');
+    <script>
+        function showRescheduleSection(id) {
+            document.getElementById(`reschedule-section-${id}`).style.display = 'block';
         }
-    }
-    verifySession();
 
-    // Prevent caching issues on mobile back button
-    window.addEventListener('pageshow', (event) => {
-        if (event.persisted) {
-            verifySession();
-        }
-    });
-
-    // 2. Robust Logout Handler
-    function logoutCounsellor(event) {
-        if (event) event.preventDefault();
-        
-        // Clear potential spelling variants across storages
-        ['activeCounsellor', 'activeCounselor'].forEach((key) => {
-            sessionStorage.removeItem(key);
-            localStorage.removeItem(key);
-        });
-
-        window.location.replace('index.html');
-    }
-
-    // 3. Appointment Management Logic
-    function handleAppointment(appointmentId, action) {
-        const card = document.getElementById(`app-1`);
-        // Add your backend API call here to update status
-        console.log(`Appointment ${appointmentId} status changed to: ${action}`);
-        
-        if (action === 'Accepted') {
-            alert('Appointment accepted.');
-        } else if (action === 'Declined') {
-            alert('Appointment declined.');
-            card.remove(); // Remove from UI
-        } else if (action === 'Reschedule') {
-            const newTime = prompt("Enter new proposed time:");
-            if (newTime) {
-                alert(`Reschedule request sent for: ${newTime}`);
+        function handleAppointment(id, action) {
+            const card = document.getElementById(`app-${id}`);
+            if (action === 'Accepted') {
+                alert('Appointment accepted.');
+            } else if (action === 'Declined') {
+                alert('Appointment declined.');
+                card.remove();
             }
         }
-    }
-</script>
 
+        function submitReschedule(id) {
+            const newTime = document.getElementById(`new-time-${id}`).value;
+            if (newTime) {
+                alert(`Reschedule request sent for: ${newTime}`);
+                document.getElementById(`reschedule-section-${id}`).style.display = 'none';
+            } else {
+                alert('Please select a valid date and time.');
+            }
+        }
+    </script>
 </body>
 </html>
