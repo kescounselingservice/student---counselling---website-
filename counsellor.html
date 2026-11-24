@@ -3,68 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Counselor Portal - MindSpace</title>
+    <title>Counsellor Portal - MindSpace</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background-color: #fdf4f5; }
-        .container { max-width: 800px; margin: auto; }
-        .appointment-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; background: white; border-radius: 8px; }
-        button { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-accept { background-color: #28a745; color: white; }
-        .btn-reschedule { background-color: #ffc107; color: black; }
-        .btn-decline { background-color: #dc3545; color: white; }
-        .reschedule-section { margin-top: 10px; display: none; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf4f5; color: #4a4a4a; margin: 0; padding: 0; }
+        .container { max-width: 800px; margin: 40px auto; padding: 20px; }
+        h1 { color: #b5838d; text-align: center; margin-bottom: 30px; }
+        .appointment-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; margin-right: 10px; }
+        .btn-accept { background-color: #28a745; }
+        .btn-decline { background-color: #dc3545; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Counselor Dashboard</h1>
-        <div id="appointment-list">
-            <div class="appointment-card" id="app-1">
-                <div>
-                    <h3>Student: John Doe</h3>
-                    <p>Status: Booked</p>
-                    <p>Time: Today at 2:00 PM</p>
-                </div>
-                <div>
-                    <button class="btn-accept" onclick="handleAppointment('1', 'Accepted')">Accept</button>
-                    <button class="btn-reschedule" onclick="showRescheduleSection('1')">Reschedule</button>
-                    <button class="btn-decline" onclick="handleAppointment('1', 'Declined')">Decline</button>
-                </div>
-                <div id="reschedule-section-1" class="reschedule-section">
-                    <input type="datetime-local" id="new-time-1">
-                    <button onclick="submitReschedule('1')">Confirm New Time</button>
-                </div>
-            </div>
-        </div>
+        <h1>Counsellor Dashboard</h1>
+        <div id="appointment-list">Loading appointments...</div>
     </div>
 
-    <script>
-        function showRescheduleSection(id) {
-            document.getElementById(`reschedule-section-${id}`).style.display = 'block';
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        function handleAppointment(id, action) {
-            const card = document.getElementById(`app-${id}`);
-            const statusText = card.querySelector('p');
-            if (action === 'Accepted') {
-                alert('Appointment accepted.');
-                statusText.innerHTML = 'Status: Accepted';
-            } else if (action === 'Declined') {
-                alert('Appointment declined.');
-                statusText.innerHTML = 'Status: Declined';
+        const firebaseConfig = {
+            apiKey: "AIzaSyAv1P2UDZBStQcISpSTXFtUrDPTG8Yrf4w",
+            authDomain: "student-counselling-c6395.firebaseapp.com",
+            projectId: "student-counselling-c6395",
+            storageBucket: "student-counselling-c6395.appspot.com",
+            messagingSenderId: "95930424300",
+            appId: "1:95930424300:web:e4161f9857aa39b8da779a",
+            measurementId: "G-NYPXX2PXC9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadAppointments() {
+            const container = document.getElementById('appointment-list');
+            try {
+                const q = query(collection(db, "bookings"), where("counsellor", "==", "Vainavi Ma'am"));
+                const querySnapshot = await getDocs(q);
+                container.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p>No appointments found for Vainavi Ma\'am.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const session = docSnap.data();
+                    const card = document.createElement('div');
+                    card.className = 'appointment-card';
+                    card.innerHTML = `
+                        <h3>Student: ${session.studentName || 'N/A'}</h3>
+                        <p><strong>Email:</strong> ${session.studentEmail || 'N/A'}</p>
+                        <p><strong>Status:</strong> <span id="status-${docSnap.id}">${session.status || 'pending'}</span></p>
+                        <p><strong>Date & Time:</strong> ${session.bookingTime ? new Date(session.bookingTime).toLocaleString() : 'N/A'}</p>
+                        <p><strong>Notes:</strong> ${session.notes || 'None'}</p>
+                        <div>
+                            <button class="btn btn-accept" onclick="updateStatus('${docSnap.id}', 'Confirmed')">Accept</button>
+                            <button class="btn btn-decline" onclick="updateStatus('${docSnap.id}', 'Declined')">Decline</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error loading appointments:", error);
+                container.innerHTML = '<p>Error loading appointments.</p>';
             }
         }
 
-        function submitReschedule(id) {
-            const newTime = document.getElementById(`new-time-${id}`).value;
-            if (newTime) {
-                alert(`Reschedule request sent for: ${newTime}`);
-                document.getElementById(`reschedule-section-${id}`).style.display = 'none';
-            } else {
-                alert('Please select a valid date and time.');
+        window.updateStatus = async (docId, newStatus) => {
+            try {
+                const docRef = doc(db, "bookings", docId);
+                await updateDoc(docRef, { status: newStatus });
+                document.getElementById(`status-${docId}`).innerText = newStatus;
+                alert(`Appointment marked as ${newStatus}.`);
+            } catch (error) {
+                console.error("Error updating status:", error);
+                alert("Failed to update status.");
             }
-        }
+        };
+
+        loadAppointments();
     </script>
 </body>
 </html>
