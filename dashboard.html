@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - MindSpace | KES Counselling Service</title>
+    <title>Dashboard - MindSpace | KES Counseling</title>
     <style>
         body {
             background-color: #fdf4f5;
@@ -15,17 +15,24 @@
             flex-direction: column;
             min-height: 100vh;
         }
+
         header {
             background-color: #ffb5a7;
             padding: 20px;
             text-align: center;
         }
+
         nav a {
             margin: 0 15px;
             color: #6d6875;
             text-decoration: none;
             font-weight: bold;
         }
+
+        nav a:hover, nav a.active {
+            color: #b5838d;
+        }
+
         main {
             flex: 1;
             padding: 40px 20px;
@@ -34,31 +41,50 @@
             box-sizing: border-box;
             margin: 0 auto;
         }
+
         h1 {
             color: #b5838d;
             text-align: center;
             margin-bottom: 30px;
         }
-        .card {
+
+        .session-card {
             background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #ffb5a7;
         }
-        .booking-item {
-            border-bottom: 2px solid #fdf4f5;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+
+        .session-card.confirmed {
+            border-left-color: #a3c4f3;
         }
-        .booking-item:last-child {
-            border-bottom: none;
+
+        .status {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
         }
+
+        .details {
+            margin: 10px 0;
+        }
+
         footer {
-            background-color: #f4a261;
             text-align: center;
-            padding: 15px;
-            font-size: 0.85rem;
-            color: #4a4a4a;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #b5838d;
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -68,69 +94,58 @@
         <nav>
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
+            <a href="meet-our-counsellors.html">Meet Our Counsellors</a>
             <a href="book.html">Book Session</a>
-            <a href="dashboard.html">Dashboard</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
         </nav>
     </header>
 
     <main>
         <h1>Student Dashboard</h1>
-        <div class="card">
-            <h3>Upcoming Sessions</h3>
-            <div id="bookingsList">Loading bookings...</div>
+        
+        <div id="booking-list">
+            <!-- Dynamically populated bookings will appear here -->
+            <div class="session-card pending">
+                <div class="status">Status: Pending</div>
+                <div class="details"><strong>Counsellor:</strong> Vainavi Kumta</div>
+                <div class="details"><strong>Date & Time:</strong> 28/11/2026, 10:00:00 AM</div>
+            </div>
+
+            <div class="session-card confirmed">
+                <div class="status">Status: Confirmed</div>
+                <div class="details"><strong>Counsellor:</strong> Kinnari Metha</div>
+                <div class="details"><strong>Date & Time:</strong> 25/11/2026, 2:01:00 PM</div>
+            </div>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2026 MindSpace - KES Counselling Service</p>
+        &copy; 2026 MindSpace Platform
     </footer>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js";
 
+        // Your Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyAv1P2UDZBStQcISpSTXFtUrDPTG8Yrf4w",
-            authDomain: "student-counselling-c6395.firebaseapp.com",
-            projectId: "student-counselling-c6395",
-            storageBucket: "student-counselling-c6395.appspot.com",
-            messagingSenderId: "95930424300",
-            appId: "1:95930424300:web:e4161f9857aa39b8da779a",
-            measurementId: "G-NYPXX2PXC9"
+            apiKey: "AIzaSyAv1p2UDZBS-...",
+            authDomain: "student-counselling.firebaseapp.com",
+            projectId: "student-counselling",
+            storageBucket: "student-counselling.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:examplehash67890"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function loadBookings() {
-            const container = document.getElementById('bookingsList');
-            try {
-                const querySnapshot = await getDocs(collection(db, "bookings"));
-                container.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    container.innerHTML = '<p>No active bookings.</p>';
-                    return;
-                }
-
-                querySnapshot.forEach((doc) => {
-                    const session = doc.data();
-                    const item = document.createElement('div');
-                    item.className = 'booking-item';
-                    item.innerHTML = `
-                        <p><strong>Status:</strong> ${session.status || 'Pending'}</p>
-                        <p><strong>Counsellor:</strong> ${session.counsellor || 'N/A'}</p>
-                        <p><strong>Date & Time:</strong> ${session.bookingTime ? new Date(session.bookingTime).toLocaleString() : 'N/A'}</p>
-                    `;
-                    container.appendChild(item);
-                });
-            } catch (error) {
-                console.error("Error loading bookings:", error);
-                container.innerHTML = '<p>Error loading bookings.</p>';
-            }
+        // Simulated fetching for demonstration based on your view
+        async function loadDashboard() {
+            // Logic to fetch and display bookings for the logged-in student
         }
 
-        loadBookings();
+        loadDashboard();
     </script>
 </body>
 </html>
