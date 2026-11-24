@@ -41,12 +41,12 @@
     async function loadAppointments() {
         const container = document.getElementById('appointment-list');
         try {
-            const q = query(collection(db, "bookings"), where("counsellor", "==", "Vainavi Ma'am"));
+            const q = query(collection(db, "bookings"), where("counsellor", "in", ["Vainavi Ma'am", "Kinari Ma'am"]));
             const querySnapshot = await getDocs(q);
             container.innerHTML = '';
 
             if (querySnapshot.empty) {
-                container.innerHTML = '<p>No appointments found for Vainavi Ma\'am.</p>';
+                container.innerHTML = '<p>No appointments found for Vainavi Ma\'am or Kinari Ma\'am.</p>';
                 return;
             }
 
@@ -56,6 +56,7 @@
                 card.className = 'appointment-card';
                 card.innerHTML = `
                     <h3>Student: ${session.studentName || 'N/A'}</h3>
+                    <p><strong>Counsellor:</strong> ${session.counsellor || 'N/A'}</p>
                     <p><strong>Email:</strong> ${session.studentEmail || 'N/A'}</p>
                     <p><strong>Status:</strong> <span id="status-${docSnap.id}">${session.status || 'Pending'}</span></p>
                     <p><strong>Date & Time:</strong> ${session.bookingDate || 'N/A'}</p>
@@ -89,4 +90,3 @@
 </script>
 </body>
 </html>
-
