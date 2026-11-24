@@ -64,94 +64,64 @@
 </head>
 <body>
 
-<header>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="book.html">Book Session</a>
-        <a href="dashboard.html">Dashboard</a>
-    </nav>
-</header>
+    <header>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="book.html">Book Session</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+    </header>
 
-<main>
-    <h1>Student Dashboard</h1>
-    <div class="card">
-        <h3>Upcoming Sessions</h3>
-        <div id="bookingsList">Loading bookings...</div>
-    </div>
-</main>
+    <main>
+        <h1>Student Dashboard</h1>
+        <div class="card">
+            <h3>Upcoming Sessions</h3>
+            <div id="bookingsList">Loading bookings...</div>
+        </div>
+    </main>
 
-<footer>
-    <p>&copy; 2026 MindSpace - KES Counselling Service</p>
-</footer>
+    <footer>
+        <p>&copy; 2026 MindSpace - KES Counselling Service</p>
+    </footer>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyAv1P2UXDZbStQcIsPsTXFtUrDPTG8yRl0",
-        authDomain: "student-counselling-c6395.firebaseapp.com",
-        projectId: "student-counselling-c6395",
-        storageBucket: "student-counselling-c6395.appspot.com",
-        messagingSenderId: "959304254300",
-        appId: "1:959304254300:web:06533ac4c1efe5c3da7799"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function loadBookings() {
-        const container = document.getElementById('bookingsList');
-        try {
-            const querySnapshot = await getDocs(collection(db, "bookings"));
-            container.innerHTML = '';
-
-            if (querySnapshot.empty) {
-                container.innerHTML = '<p>No active bookings. Click below to schedule.</p>';
-                return;
-            }
-
-            querySnapshot.forEach((doc) => {
-                const session = doc.data();
+    <script>
+        async function loadBookings() {
+            const container = document.getElementById('bookingsList');
+            try {
+                const response = await fetch('Schedule.json');
+                const data = await response.json();
+                container.innerHTML = '';
                 
-                const status = session.status || 'Booked';
-                
-                let counselorName = 'N/A';
-                if (typeof session.counselor === 'object' && session.counselor !== null) {
-                    counselorName = session.counselor.name || session.counselor.value || 'Selected Counsellor';
-                } else if (typeof session.counselor === 'string') {
-                    counselorName = session.counselor;
-                }
-
-                let formattedDate = 'N/A';
-                if (session.bookingTime) {
-                    const dateObj = typeof session.bookingTime === 'object' && session.bookingTime.toDate 
-                        ? session.bookingTime.toDate() 
-                        : new Date(session.bookingTime);
-                    
-                    if (!isNaN(dateObj.getTime())) {
-                        formattedDate = dateObj.toLocaleString();
+                let hasBookings = false;
+                if (data.Schedule) {
+                    for (const day in data.Schedule) {
+                        data.Schedule[day].forEach(session => {
+                            if (session.Status === 'Booked') {
+                                hasBookings = true;
+                                const item = document.createElement('div');
+                                item.className = 'booking-item';
+                                item.innerHTML = `
+                                    <p><strong>Status:</strong> ${session.Status}</p>
+                                    <p><strong>Counsellor:</strong> ${session.CounselorIDs ? session.CounselorIDs.join(', ') : 'N/A'}</p>
+                                    <p><strong>Date & Time:</strong> ${session.Start}</p>
+                                `;
+                                container.appendChild(item);
+                            }
+                        });
                     }
                 }
-
-                const item = document.createElement('div');
-                item.className = 'booking-item';
-                item.innerHTML = `
-                    <p><strong>Status:</strong> ${status}</p>
-                    <p><strong>Counsellor:</strong> ${counselorName}</p>
-                    <p><strong>Date & Time:</strong> ${formattedDate}</p>
-                `;
-                container.appendChild(item);
-            });
-        } catch (error) {
-            console.error("Error loading bookings:", error);
-            container.innerHTML = '<p>Error loading bookings.</p>';
+                
+                if (!hasBookings) {
+                    container.innerHTML = '<p>No active bookings.</p>';
+                }
+            } catch (error) {
+                console.error("Error loading bookings:", error);
+                container.innerHTML = '<p>Error loading bookings.</p>';
+            }
         }
-    }
 
-    loadBookings();
-</script>
-
+        loadBookings();
+    </script>
 </body>
 </html>
