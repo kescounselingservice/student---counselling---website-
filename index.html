@@ -1,5 +1,5 @@
- <!DOCTYPE html>
-<htmllang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,8 +87,8 @@
         } else if (action === 'login') {
             const storedUser = JSON.parse(localStorage.getItem('studentUser'));
             if (storedUser && storedUser.email === email && storedUser.password === password) {
-                alert('Redirecting to Student Dashboard...');
-                window.location.href = 'student-dashboard.html';
+                alert('Redirecting to Booking Page...');
+                window.location.href = 'book.html';
             } else {
                 alert('Invalid credentials or user not found.');
             }
@@ -104,7 +104,6 @@
             return;
         }
 
-        // Add proper authentication logic here
         localStorage.setItem('activeCounselor', username);
         alert('Redirecting to Counselor Dashboard...');
         window.location.href = 'dashboard.html';
