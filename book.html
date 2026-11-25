@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Session - MindSpace</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf4f5; color: #4a4a4a; margin: 0; padding: 0; }
-        header { background-color: #ffb5a7; padding: 20px; text-align: center; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffb5a7; padding: 20px; text-align: center; }
         nav a { margin: 0 15px; color: #6d6875; text-decoration: none; font-weight: bold; }
         main { padding: 40px 20px; max-width: 600px; margin: auto; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #c9ada7; border-radius: 5px; box-sizing: border-box; }
-        .btn { background-color: #c9ada7; color: white; padding: 15px; border: none; border-radius: 25px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn { background-color: #c9ada7; color: white; padding: 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -21,10 +20,10 @@
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="book.html">Book Session</a>
-            <a href="meet-our-counsellors.html">Meet Our Counsellors</a>
-            <a href="student-dashboard.html">Dashboard</a>
+            <a href="dashboard.html">Dashboard</a>
         </nav>
     </header>
+
     <main>
         <h1>Book a Counselling Session</h1>
         <form id="bookingForm">
@@ -61,7 +60,7 @@
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyA1P2U0ZDbStQIC5pTufTPDrtQpc6c-c6395",
+            apiKey: "AIzaSyA1P2U0ZDbStQIC5PTuftPDRtQpc6c-c6395",
             authDomain: "student-counselling-c6395.firebaseapp.com",
             projectId: "student-counselling-c6395",
             storageBucket: "student-counselling-c6395.appspot.com",
@@ -91,7 +90,7 @@
                 });
                 alert('Booking request submitted!');
                 form.reset();
-                window.location.href = 'student-dashboard.html';
+                window.location.href = 'dashboard.html';
             } catch (error) {
                 console.error("Error saving booking:", error);
                 alert('Failed to save booking.');
