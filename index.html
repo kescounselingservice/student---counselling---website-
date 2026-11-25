@@ -88,10 +88,32 @@
             const storedUser = JSON.parse(localStorage.getItem('studentUser'));
             if (storedUser && storedUser.email === email && storedUser.password === password) {
                 alert('Redirecting to Booking Page...');
+                localStorage.setItem('studentEmail', email);
                 window.location.href = 'book.html';
-        localStorage.setItem('studentEmail', email);
-                </script>
+            } else {
+                alert('Invalid student credentials or user does not exist.');
+            }
+        }
+    }
+
+    function handleCounselorAuth() {
+        const username = document.getElementById('counselorUsername').value;
+        const password = document.getElementById('counselorPassword').value;
+
+        if (!username || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        // Hardcoded check for counselor as shown in your video
+        if (username === 'VAINAVI MAM' && password.length > 0) {
+            alert('Redirecting to Counselor Dashboard...');
+            window.location.href = 'counsellor.html';
+        } else {
+            alert('Invalid counselor credentials.');
+        }
+    }
+</script>
+
 </body>
 </html>
-
-
