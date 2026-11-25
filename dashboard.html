@@ -1,56 +1,110 @@
-<!-- Ensure this container exists in your HTML body -->
-<div id="booking-list">Loading appointments...</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counsellor Dashboard - MindSpace</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fce4ec;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #880e4f;
+        }
+        .appointment-card {
+            border: 1px solid #f8bbd0;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background-color: #fff9f9;
+        }
+        .appointment-card h3 {
+            margin-top: 0;
+            color: #c2185b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Counsellor Dashboard</h2>
+    <div id="booking-list">Loading appointments...</div>
+</div>
 
 <script type="module">
-  // Keep your existing Firebase imports and initializeApp / getFirestore(app) setup above,
-  // and make sure collection and getDocs are imported from firebase-firestore.js:
-  // import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-  function escapeHTML(str) {
-    return String(str ?? "").replace(/[&<>"']/g, (ch) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-    }[ch]));
-  }
+    const firebaseConfig = {
+        projectId: "student-counselling-c639c",
+        storageBucket: "student-counselling-c639c.appspot.com",
+        messagingSenderId: "959304254300",
+        appId: "1:959304254300:web:e4161f985a3979ea0f2d57",
+        measurementId: "G-NYPXX2PXC9"
+    };
 
-  async function loadDashboard() {
-    const bookingList = document.getElementById("booking-list");
-    if (!bookingList) return;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    try {
-      const querySnapshot = await getDocs(collection(db, "Appointments"));
-
-      if (querySnapshot.empty) {
-        bookingList.innerHTML = "<p>No appointments scheduled yet.</p>";
-        return;
-      }
-
-      let html = "";
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const studentName = escapeHTML(data["STUDENT NAME"] || "Unknown Student");
-        const appointmentTime = escapeHTML(data["APPOINTMENTTIME"] || "Not set");
-        const preferredSlot = escapeHTML(data["PREFERREDTIMESLOT"] || "Not set");
-
-        html += `
-          <div class="appointment-card" style="border: 1px solid #ddd; padding: 12px; margin-bottom: 10px; border-radius: 6px;">
-            <h3>${studentName}</h3>
-            <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
-            <p><strong>Preferred Time Slot:</strong> ${preferredSlot}</p>
-          </div>
-        `;
-      });
-
-      bookingList.innerHTML = html;
-    } catch (error) {
-      console.error("Error loading appointments:", error);
-      bookingList.innerHTML = "<p>Unable to load appointments. Check your Firestore permissions.</p>";
+    function escapeHTML(str) {
+        return String(str ?? "").replace(/[&<>"']/g, (ch) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[ch]));
     }
-  }
 
-  // Call loadDashboard once the page loads (or inside your onAuthStateChanged callback)
-  loadDashboard();
+    async function loadDashboard() {
+        const bookingList = document.getElementById("booking-list");
+        if (!bookingList) return;
+
+        try {
+            const querySnapshot = await getDocs(collection(db, "bookings"));
+
+            if (querySnapshot.empty) {
+                bookingList.innerHTML = "<p>No appointments scheduled yet.</p>";
+                return;
+            }
+
+            let html = "";
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const studentName = escapeHTML(data["STUDENT NAME"]) || "Unknown Student";
+                const appointmentTime = escapeHTML(data["APPOINTMENTTIME"]) || "Not set";
+                const preferredSlot = escapeHTML(data["PREFERREDTIMESLOT"]) || "Not set";
+
+                html += `
+                    <div class="appointment-card">
+                        <h3>${studentName}</h3>
+                        <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
+                        <p><strong>Preferred Time Slot:</strong> ${preferredSlot}</p>
+                    </div>
+                `;
+            });
+
+            bookingList.innerHTML = html;
+        } catch (error) {
+            console.error("Error loading appointments:", error);
+            bookingList.innerHTML = "<p>Unable to load appointments. Check your Firestore permissions.</p>";
+        }
+    }
+
+    loadDashboard();
 </script>
+
+</body>
+</html>
