@@ -1,151 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - MindSpace | KES Counseling</title>
-    <style>
-        body {
-            background-color: #fdf4f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #4a4a4a;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+<!-- Ensure this container exists in your HTML body -->
+<div id="booking-list">Loading appointments...</div>
 
-        header {
-            background-color: #ffb5a7;
-            padding: 20px;
-            text-align: center;
-        }
+<script type="module">
+  // Keep your existing Firebase imports and initializeApp / getFirestore(app) setup above,
+  // and make sure collection and getDocs are imported from firebase-firestore.js:
+  // import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        nav a {
-            margin: 0 15px;
-            color: #6d6875;
-            text-decoration: none;
-            font-weight: bold;
-        }
+  function escapeHTML(str) {
+    return String(str ?? "").replace(/[&<>"']/g, (ch) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }[ch]));
+  }
 
-        nav a:hover, nav a.active {
-            color: #b5838d;
-        }
+  async function loadDashboard() {
+    const bookingList = document.getElementById("booking-list");
+    if (!bookingList) return;
 
-        main {
-            flex: 1;
-            padding: 40px 20px;
-            max-width: 800px;
-            width: 100%;
-            box-sizing: border-box;
-            margin: 0 auto;
-        }
+    try {
+      const querySnapshot = await getDocs(collection(db, "Appointments"));
 
-        h1 {
-            color: #b5838d;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+      if (querySnapshot.empty) {
+        bookingList.innerHTML = "<p>No appointments scheduled yet.</p>";
+        return;
+      }
 
-        .session-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            border-left: 5px solid #ffb5a7;
-        }
+      let html = "";
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const studentName = escapeHTML(data["STUDENT NAME"] || "Unknown Student");
+        const appointmentTime = escapeHTML(data["APPOINTMENTTIME"] || "Not set");
+        const preferredSlot = escapeHTML(data["PREFERREDTIMESLOT"] || "Not set");
 
-        .session-card.confirmed {
-            border-left-color: #a3c4f3;
-        }
+        html += `
+          <div class="appointment-card" style="border: 1px solid #ddd; padding: 12px; margin-bottom: 10px; border-radius: 6px;">
+            <h3>${studentName}</h3>
+            <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
+            <p><strong>Preferred Time Slot:</strong> ${preferredSlot}</p>
+          </div>
+        `;
+      });
 
-        .status {
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
+      bookingList.innerHTML = html;
+    } catch (error) {
+      console.error("Error loading appointments:", error);
+      bookingList.innerHTML = "<p>Unable to load appointments. Check your Firestore permissions.</p>";
+    }
+  }
 
-        .details {
-            margin: 10px 0;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
-            color: #b5838d;
-        }
-
-        @media (max-width: 600px) {
-            nav {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="meet-our-counsellors.html">Meet Our Counsellors</a>
-            <a href="book.html">Book Session</a>
-            <a href="dashboard.html" class="active">Dashboard</a>
-        </nav>
-    </header>
-
-    <main>
-        <h1>Student Dashboard</h1>
-        
-        <div id="booking-list">
-            <!-- Dynamically populated bookings will appear here -->
-            <div class="session-card pending">
-                <div class="status">Status: Pending</div>
-                <div class="details"><strong>Counsellor:</strong> Vainavi Kumta</div>
-                <div class="details"><strong>Date & Time:</strong> 28/11/2026, 10:00:00 AM</div>
-            </div>
-
-            <div class="session-card confirmed">
-                <div class="status">Status: Confirmed</div>
-                <div class="details"><strong>Counsellor:</strong> Kinnari Metha</div>
-                <div class="details"><strong>Date & Time:</strong> 25/11/2026, 2:01:00 PM</div>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        &copy; 2026 MindSpace Platform
-    </footer>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js";
-
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAv1p2UDZBS-...",
-            authDomain: "student-counselling.firebaseapp.com",
-            projectId: "student-counselling",
-            storageBucket: "student-counselling.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:examplehash67890"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Simulated fetching for demonstration based on your view
-        async function loadDashboard() {
-            // Logic to fetch and display bookings for the logged-in student
-        }
-
-        loadDashboard();
-    </script>
-</body>
-</html>
+  // Call loadDashboard once the page loads (or inside your onAuthStateChanged callback)
+  loadDashboard();
+</script>
