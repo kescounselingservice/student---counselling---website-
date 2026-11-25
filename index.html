@@ -1,5 +1,5 @@
  <!DOCTYPE html>
-<html lang="en">
+<htmllang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +7,20 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: #fdf4f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        header { background-color: #ffb5a7; padding: 20px; text-align: center; }
-        .main-container { display: flex; flex: 1; justify-content: space-around; padding: 40px 20px; }
-        .portal { background: #fff; padding: 30px; border-radius: 10px; width: 45%; max-width: 500px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h2 { margin-bottom: 20px; color: #333; text-align: center; }
+        header { background-color: #ffb5a7; padding: 20px; text-align: center; color: #a37081; }
+        .main-container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; }
+        .portal { background: #fff; padding: 20px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { margin-bottom: 15px; color: #333; text-align: center; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #555; }
-        input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        label { display: block; margin-bottom: 5px; color: #666; }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;
+        }
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
         button { flex: 1; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-login { background-color: #b5e2fa; color: #fff; }
-        .btn-signup { background-color: #ffb5a7; color: #fff; }
-        footer { background-color: #eee; text-align: center; padding: 15px; position: fixed; bottom: 0; width: 100%; font-size: 0.85rem; }
+        .btn-login { background-color: #b5e2fa; color: #333; }
+        .btn-signup { background-color: #ffcad4; color: #333; }
+        footer { background-color: #eee; text-align: center; padding: 10px; margin-top: 40px; color: #777; }
     </style>
 </head>
 <body>
@@ -73,17 +75,20 @@
         const email = document.getElementById('studentEmail').value;
         const password = document.getElementById('studentPassword').value;
 
-        if (!email || !password) { alert('Please fill in all fields.'); return; }
+        if (!email || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
 
-        if(action === 'signup') {
+        if (action === 'signup') {
             localStorage.setItem('studentUser', JSON.stringify({ email, password }));
             alert('Sign up successful! Please log in.');
             document.getElementById('studentForm').reset();
-        } else if(action === 'login') {
+        } else if (action === 'login') {
             const storedUser = JSON.parse(localStorage.getItem('studentUser'));
-            if(storedUser && storedUser.email === email && storedUser.password === password) {
+            if (storedUser && storedUser.email === email && storedUser.password === password) {
                 alert('Redirecting to Student Dashboard...');
-                window.location.href = 'dashboard.html';
+                window.location.href = 'student-dashboard.html';
             } else {
                 alert('Invalid credentials or user not found.');
             }
@@ -94,11 +99,15 @@
         const username = document.getElementById('counselorUsername').value;
         const password = document.getElementById('counselorPassword').value;
 
-        if (!username || !password) { alert('Please fill in all fields.'); return; }
+        if (!username || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
 
+        // Add proper authentication logic here
         localStorage.setItem('activeCounselor', username);
         alert('Redirecting to Counselor Dashboard...');
-        window.location.href = 'counsellor.html';
+        window.location.href = 'dashboard.html';
     }
 </script>
 
