@@ -119,7 +119,64 @@
 </main>
 
 <script type="module">
-    // Your existing script logic remains here
+    // Check if user is logged in
+    document.addEventListener('DOMContentLoaded', () => {
+        const loggedInUser = localStorage.getItem('studentEmail');
+        if (!loggedInUser) {
+            alert('Please log in first to access the booking page.');
+            window.location.href = 'index.html';
+            return;
+        }
+        // Prefill the email field if available
+        const emailInput = document.getElementById('email');
+        if (emailInput) {
+            emailInput.value = loggedInUser;
+        }
+    });
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA1P2U0ZDbStQIC5PTuftPDRTQpc6c-c6395",
+        authDomain: "student-counselling-c6395.firebaseapp.com",
+        projectId: "student-counselling-c6395",
+        storageBucket: "student-counselling-c6395.appspot.com",
+        messagingSenderId: "095934254300",
+        appId: "1:95934254300:web:e4161f9857aab9be3985d1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById('bookingForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+
+        try {
+            await addDoc(collection(db, "bookings"), {
+                studentName: document.getElementById('name').value,
+                studentEmail: document.getElementById('email').value,
+                counselor: document.getElementById('counselor').value,
+                bookingTime: document.getElementById('date').value,
+                notes: document.getElementById('notes').value,
+                status: "pending",
+                createdAt: new Date().toISOString()
+            });
+            alert('Booking request submitted!');
+            form.reset();
+            window.location.href = './dashboard.html';
+        } catch (error) {
+            console.error("Error saving booking:", error);
+            alert('Failed to save booking.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Confirm Booking';
+        }
+    });
 </script>
 
 </body>
