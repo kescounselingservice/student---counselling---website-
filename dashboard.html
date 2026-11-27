@@ -44,15 +44,16 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
-        projectId: "student-counselling-c639c",
-        storageBucket: "student-counselling-c639c.appspot.com",
-        messagingSenderId: "959304254300",
-        appId: "1:959304254300:web:e4161f985a3979ea0f2d57",
-        measurementId: "G-NYPXX2PXC9"
+        apiKey: "AIzaSyA1P2U0ZDbStQIC5PTuftPDRTQpc6c-c6395",
+        authDomain: "student-counselling-c6395.firebaseapp.com",
+        projectId: "student-counselling-c6395",
+        storageBucket: "student-counselling-c6395.appspot.com",
+        messagingSenderId: "095934254300",
+        appId: "1:95934254300:web:e4161f9857aab9be3985d1"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -83,15 +84,17 @@
             let html = "";
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                const studentName = escapeHTML(data["STUDENT NAME"]) || "Unknown Student";
-                const appointmentTime = escapeHTML(data["APPOINTMENTTIME"]) || "Not set";
-                const preferredSlot = escapeHTML(data["PREFERREDTIMESLOT"]) || "Not set";
+                const studentName = escapeHTML(data.studentName || "Unknown");
+                const bookingTime = escapeHTML(data.bookingTime || "Not specified");
+                const counselor = escapeHTML(data.counselor || "Not specified");
+                const notes = escapeHTML(data.notes || "");
 
                 html += `
                     <div class="appointment-card">
                         <h3>${studentName}</h3>
-                        <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
-                        <p><strong>Preferred Time Slot:</strong> ${preferredSlot}</p>
+                        <p><strong>Counsellor:</strong> ${counselor}</p>
+                        <p><strong>Date & Time:</strong> ${bookingTime}</p>
+                        <p><strong>Notes:</strong> ${notes}</p>
                     </div>
                 `;
             });
@@ -99,7 +102,7 @@
             bookingList.innerHTML = html;
         } catch (error) {
             console.error("Error loading appointments:", error);
-            bookingList.innerHTML = "<p>Unable to load appointments. Check your Firestore permissions.</p>";
+            bookingList.innerHTML = "<p>Unable to load appointments. Check console for details.</p>";
         }
     }
 
