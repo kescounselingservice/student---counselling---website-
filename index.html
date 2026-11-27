@@ -6,9 +6,13 @@
     <title>MindSpace - Access</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #fdf4f5; font-family: sans-serif; padding: 20px; }
-        .main-container { display: flex; flex-direction: column; gap: 20px; max-width: 400px; margin: 0 auto; }
-        .portal { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        body { background-color: #fdf4f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background-color: #ffb5a7; padding: 20px; text-align: center; }
+        nav { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        nav a { padding: 10px 20px; color: #6d6875; text-decoration: none; font-weight: bold; background-color: #ffffff; border-radius: 20px; transition: background-color 0.3s; }
+        nav a:hover { background-color: #fec8d8; }
+        .main-container { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; flex: 1; }
+        .portal { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin-bottom: 20px; }
         h2 { margin-bottom: 10px; color: #333; text-align: center; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; color: #666; }
@@ -20,6 +24,16 @@
     </style>
 </head>
 <body>
+
+<header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="book.html">Book Session</a>
+        <a href="meet-our-counsellors.html">Meet Our Counsellors</a>
+        <a href="dashboard.html">Dashboard</a>
+    </nav>
+</header>
 
 <div class="main-container">
     <div class="portal">
