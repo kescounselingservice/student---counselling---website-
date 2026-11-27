@@ -20,11 +20,23 @@
             padding: 20px;
             text-align: center;
         }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
         nav a {
-            margin: 0 15px;
+            padding: 10px 20px;
             color: #6d6875;
             text-decoration: none;
             font-weight: bold;
+            background-color: #ffffff;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: #fec8d8;
         }
         main {
             flex: 1;
@@ -37,33 +49,19 @@
             text-align: center;
             margin-top: 30px;
         }
-        h3 {
-            color: #b5838d;
-            margin-top: 0;
-        }
-        p, li {
-            line-height: 1.6;
-            color: #6d6875;
-        }
-        .section-card, .counselor-card {
+        .section-card {
             background: white;
             padding: 25px;
             margin: 20px 0;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-        }
-        ul {
-            padding-left: 20px;
-        }
-        li {
-            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         footer {
             background-color: #f4a261;
             text-align: center;
             padding: 15px;
             font-size: 0.85rem;
-            color: #4a4a4a;
+            color: white;
         }
     </style>
 </head>
@@ -74,52 +72,22 @@
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="book.html">Book Session</a>
+        <a href="meet-our-counsellors.html">Meet Our Counsellors</a>
         <a href="dashboard.html">Dashboard</a>
     </nav>
 </header>
 
 <main>
     <h1>KES Counselling Service — Overview</h1>
-
+    
     <div class="section-card">
-        <h3>🎓 What is KES Counselling Service?</h3>
-        <p>KES Counselling Service is a student-support initiative designed to provide students with a safe, supportive and confidential space where they can talk about their emotions, personal challenges, academic pressure, relationships, stress and other difficulties.</p>
-        <p>The purpose is to make students feel heard, understood, supported and guided — without fear of judgment.</p>
-    </div>
-
-    <div class="section-card">
-        <h3>💙 What the service aims to provide</h3>
-        <ul>
-            <li><strong>Individual counselling sessions</strong> — private conversations with a counsellor.</li>
-            <li><strong>Session booking</strong> — students can request appointments.</li>
-            <li><strong>Session rescheduling</strong> — students can request a change in their appointment.</li>
-            <li><strong>Two counsellors</strong> — students can choose or connect with the appropriate counsellor.</li>
-            <li><strong>Student support</strong> — a place to talk about academic stress, personal difficulties and emotional wellbeing.</li>
-            <li><strong>Polls</strong> — counsellors can create polls and students can participate.</li>
-            <li><strong>Student profile</strong> — students can manage their profile and account.</li>
-            <li><strong>Counsellor dashboard</strong> — counsellors can manage student information, sessions, appointments and related activities.</li>
-            <li><strong>Weekly analytics</strong> — charts to track sessions conducted throughout the week.</li>
-        </ul>
+        <h3>What is KES Counselling Service?</h3>
+        <p>KES Counselling Service is a student-support initiative designed to provide students with a safe, supportive, and confidential space.</p>
     </div>
 
     <div class="section-card">
-        <h3>🌱 The Vision</h3>
-        <p>Every student deserves someone who listens, a space where they feel safe, and support when life becomes difficult.</p>
-        <p>The service is not about judging students or telling them what they are doing wrong. It's about helping them understand themselves, navigate their challenges, build confidence and move forward.</p>
-    </div>
-
-    <h2>Meet Our Counsellors</h2>
-
-    <div class="counselor-card">
-        <h3>Vainavi Ma'am</h3>
-        <p><strong>Role:</strong> Professional Counsellor</p>
-        <p>Dedicated to helping students navigate academic stress, personal difficulties, and emotional well-being through private, empathetic counselling sessions.</p>
-    </div>
-
-    <div class="counselor-card">
-        <h3>Kinnari Ma'am</h3>
-        <p><strong>Role:</strong> Professional Counsellor</p>
-        <p>Specializes in fostering personal growth, building confidence, and providing a confidential space for students to talk through their challenges.</p>
+        <h3>The Vision</h3>
+        <p>Every student deserves someone who listens.</p>
     </div>
 </main>
 
