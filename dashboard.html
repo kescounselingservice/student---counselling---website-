@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Counsellor Dashboard - MindSpace</title>
+    <title>Student Dashboard - MindSpace</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -39,13 +39,13 @@
 <body>
 
 <div class="container">
-    <h2>Counsellor Dashboard</h2>
-    <div id="booking-list">Loading appointments...</div>
+    <h2>My Appointments</h2>
+    <div id="booking-list">Loading your appointments...</div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyA1P2U0ZDbStQIC5PTuftPDRTQpc6c-c6395",
@@ -73,11 +73,18 @@
         const bookingList = document.getElementById("booking-list");
         if (!bookingList) return;
 
+        const userEmail = localStorage.getItem('studentEmail');
+        if (!userEmail) {
+            bookingList.innerHTML = "<p>Please log in to view your appointments.</p>";
+            return;
+        }
+
         try {
-            const querySnapshot = await getDocs(collection(db, "bookings"));
+            const q = query(collection(db, "bookings"), where("studentEmail", "==", userEmail));
+            const querySnapshot = await getDocs(q);
 
             if (querySnapshot.empty) {
-                bookingList.innerHTML = "<p>No appointments scheduled yet.</p>";
+                bookingList.innerHTML = "<p>You have no scheduled appointments.</p>";
                 return;
             }
 
